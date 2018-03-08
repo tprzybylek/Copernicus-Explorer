@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import json
+
+
+passwords = json.load(open('/home/tomasz/PycharmProjects/copernicus-django/passwords.json'))
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'd%&xd55po_7ralixhhr-tj9f&tj4d!0&-in#vuauh2+y$tm87-'
+SECRET_KEY = passwords['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'search',
+    'search.apps.SearchConfig',
+    'order.apps.OrderConfig',
 ]
 
 MIDDLEWARE = [
@@ -55,7 +60,11 @@ ROOT_URLCONF = 'CopernicusExplorer.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+
+            os.path.join(BASE_DIR, 'CopernicusExplorer/templates'),
+            'dghfhf/templates/hgfhfd/',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,8 +87,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'copernicusexplorer',
-        'USER': 'django',
-        'PASSWORD': 'CopExp2018',
+        'USER': passwords['database']['user'],
+        'PASSWORD': passwords['database']['password'],
         'HOST': 'localhost',
         'PORT': '5432'
     }
