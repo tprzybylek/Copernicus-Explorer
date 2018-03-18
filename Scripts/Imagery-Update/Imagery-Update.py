@@ -53,19 +53,6 @@ def write_update_time(status):
           last_product_time.__format__('%Y-%m-%d %H:%M:%S.%f'))
 
 
-def wkt_to_geojson(wkt):
-    # UNUSED
-    wkt = wkt.replace('POLYGON', 'LINESTRING')
-    wkt = wkt.replace('((', ' ')
-    wkt = wkt.replace('))', ' ')
-    wkt = wkt.replace(',', ' ')
-
-    words = wkt.split()[1:]
-    n = [[float(words[x:x + 2][0]), float(words[x:x + 2][1])] for x in range(0, len(words), 2)]
-    geojson = [n]
-    return geojson
-
-
 def size_to_bytes(size):
     if size[-2:] == 'GB':
         return str(int((float(size[:-3]) * (10 ** 9))))
@@ -75,8 +62,10 @@ def size_to_bytes(size):
         return None
 
 
-def get_product(entry):
-    for attribute in entry:
+def get_product(position):
+    product = {}
+
+    for attribute in position:
         if attribute.tag == namespace + 'title':
             satellite = attribute.text[:3]
             product['title'] = attribute.text
@@ -121,50 +110,31 @@ def get_product(entry):
     return product
 
 
-def build_query(satellite):
-    if satellite[:2] == 'S1':
-        sql_query = "INSERT INTO search_images1 (id, title, ingestiondate, satellite, " \
-                   "mode, orbitdirection, polarisationmode, producttype, relativeorbitnumber, " \
-                   "size, coordinates) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+def build_query():
+    sql_query = "INSERT INTO search_product (id, title, ingestion_date, satellite, " \
+                "mode, orbit_direction, cloud_cover, polarisation_mode, product_type, " \
+                "relative_orbit_number, size, coordinates) " \
+                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
-        sql_data = [
-                    feature['properties']['id'],
-                    feature['properties']['title'],
-                    feature['properties']['ingestiondate'],
-                    feature['properties']['satellite'],
-                    feature['properties']['mode'],
-                    feature['properties']['orbitdirection'],
-                    feature['properties']['polarisationmode'],
-                    feature['properties']['producttype'],
-                    feature['properties']['relativeorbitnumber'],
-                    size_to_bytes(feature['properties']['size']),
-                    # feature['geometry']['coordinates']
-                    'SRID=4326;' + feature['geometry']['coordinates']
-                    # "ST_MakePolygon('" + feature['geometry']['coordinates'] + "')"
-                   ]
-    else:
-        sql_query = "INSERT INTO search_images2 (id, title, ingestiondate, satellite, " \
-                   "mode, cloudcover, orbitdirection, producttype, relativeorbitnumber, " \
-                   "size, coordinates) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    if 'cloudcoverpercentage' not in feature['properties']:
+        feature['properties']['cloudcoverpercentage'] = None
+    elif 'polarisationmode' not in feature['properties']:
+        feature['properties']['polarisationmode'] = None
 
-        if not feature['properties']['cloudcoverpercentage']:
-            feature['properties']['cloudcoverpercentage'] = None
-
-        sql_data = [
-                    feature['properties']['id'],
-                    feature['properties']['title'],
-                    feature['properties']['ingestiondate'],
-                    feature['properties']['satellite'],
-                    feature['properties']['mode'],
-                    feature['properties']['cloudcoverpercentage'],
-                    feature['properties']['orbitdirection'],
-                    feature['properties']['producttype'],
-                    feature['properties']['relativeorbitnumber'],
-                    size_to_bytes(feature['properties']['size']),
-                    # feature['geometry']['coordinates']
-                    'SRID=4326;' + feature['geometry']['coordinates']
-                    # "ST_MakePolygon('" + feature['geometry']['coordinates'] + "')"
-                   ]
+    sql_data = [
+        feature['properties']['id'],
+        feature['properties']['title'],
+        feature['properties']['ingestiondate'],
+        feature['properties']['satellite'],
+        feature['properties']['mode'],
+        feature['properties']['orbitdirection'],
+        feature['properties']['cloudcoverpercentage'],
+        feature['properties']['polarisationmode'],
+        feature['properties']['producttype'],
+        feature['properties']['relativeorbitnumber'],
+        size_to_bytes(feature['properties']['size']),
+        'SRID=4326;' + feature['geometry']['coordinates']
+    ]
 
     print(sql_data)
     return sql_query, sql_data
@@ -187,7 +157,7 @@ while lastUpdate['lastUpdateTimeDifference'] > 3600 * 6:
 
     xmldoc = get_xml(queryURI)
 
-    # xmldoc = openXML('search')
+    # xmldoc = open_xml('search')
 
     conn = psycopg2.connect(host="localhost", port="5432", database="copernicusexplorer",
                             user="django", password="CopExp2018")
@@ -207,17 +177,17 @@ while lastUpdate['lastUpdateTimeDifference'] > 3600 * 6:
         product = get_product(entry)
         last_product_time = product['ingestiondate']
 
-        product['ingestiondate'] = product['ingestiondate'].__format__('%Y-%m-%d %H:%M:%S.%f')
+        # product['ingestiondate'] = product['ingestiondate'].__format__('%Y-%m-%d %H:%M:%S.%f')
 
         feature['properties'] = product
 
         print('satellite:', product['satellite'])
         print('id:', product['id'])
-        print('ingestiondate:', product['ingestiondate'])
+        print('ingestiondate:', product['ingestiondate'].__format__('%Y-%m-%d %H:%M:%S.%f'))
         print('--------------------------------')
 
-        SQL, data = build_query(feature['properties']['satellite'])
-        cur.execute(SQL, data)
+        sql, data = build_query()
+        cur.execute(sql, data)
 
     conn.commit()
     cur.close()
