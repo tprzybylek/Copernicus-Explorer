@@ -21,8 +21,7 @@ class Cart(object):
         id = str(product.id)
         satellite = str(product.satellite)
         if product not in self.cart['products']:
-            self.cart['products'].append({'id': id,
-                                          'satellite': satellite})
+            self.cart['products'].append(id)
         self.save()
 
     def remove(self, product):
