@@ -24,7 +24,6 @@ ESA_BOUNDARIES_WKT = 'POLYGON((14.17 54.14, 18.19 55.00, 23.69 54.35, 24.26 50.5
 ESA_DOWNLOAD_PATH = '/home/rimmon/webdysk/ESA/ESA2/'
 
 
-
 class MetadataDownloader:
     def __init__(self, starttime=datetime.now(),
                  endtime=None):
@@ -156,6 +155,3 @@ if __name__ == '__main__':
     for product_id in grd_ids:
         process_images(product_id, tmp.name)
     os.remove(tmp.name)
-
-
-

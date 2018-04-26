@@ -1,6 +1,8 @@
+#Django
 from django.shortcuts import render
 from django.contrib.gis.geos import Polygon
 
+#local
 from .forms import SearchForm
 from .models import Product
 from order.cart import Cart
@@ -18,7 +20,8 @@ def results(request):
         r = Product.objects
         r = r.filter(ingestion_date__gte=f['min_ingestion_date'],
                      ingestion_date__lte=f['max_ingestion_date'],
-                     satellite__startswith=f['satellite'])
+                     satellite__startswith=f['satellite']
+                     )
 
         if f['orbit_direction']:
             r = r.filter(orbit_direction__in=f['orbit_direction'])
@@ -40,7 +43,9 @@ def results(request):
             search_extent = Polygon.from_bbox((f['search_extent_min_x'],
                                                f['search_extent_min_y'],
                                                f['search_extent_max_x'],
-                                               f['search_extent_max_y']))
+                                               f['search_extent_max_y'])
+                                              )
+
             r = r.filter(coordinates__intersects=search_extent)
 
         r_geom = []
@@ -56,7 +61,8 @@ def results(request):
                           + "', color: '#000', "
                             "weight: '1', "
                             "fillOpacity: '0.1'"
-                            "}).addTo(map);")
+                            "}).addTo(map);"
+                          )
         return r, r_geom
 
     if request.method == 'POST':
@@ -70,7 +76,8 @@ def results(request):
                 search_extent = Polygon.from_bbox((form_data['search_extent_min_x'],
                                                    form_data['search_extent_min_y'],
                                                    form_data['search_extent_max_x'],
-                                                   form_data['search_extent_max_y']))
+                                                   form_data['search_extent_max_y'])
+                                                  )
 
                 search_extent_js = 'L.geoJSON(' \
                                    + search_extent.geojson \

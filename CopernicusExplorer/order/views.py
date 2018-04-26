@@ -1,7 +1,10 @@
+#Django
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.utils import timezone
 from django.contrib.gis.geos import GEOSGeometry
+
+#local
 from search.models import Product
 from .models import Order, ProductOrder
 from .cart import Cart
@@ -67,7 +70,9 @@ def cart_show_all(request):
     return render(request, 'order/cart.html', {'cart': cart_items,
                                                'items_geom': i_geom,
                                                'search_extent': search_extent,
-                                               'form': form})
+                                               'form': form
+                                               }
+                  )
 
 
 def order_confirm(request):
@@ -87,14 +92,16 @@ def order_confirm(request):
             o = Order.objects.create(e_mail=form_data['e_mail'],
                                      status=0,
                                      ordered_date_time=timezone.now(),
-                                     clip_extent=GEOSGeometry(cart.cart['extent']))
+                                     clip_extent=GEOSGeometry(cart.cart['extent'])
+                                     )
             o.save()
 
             order['id'] = o.id
 
             for product in cart.cart['products']:
                 po = ProductOrder.objects.create(product_id=Product.objects.get(id=product),
-                                                 order_id=o)
+                                                 order_id=o
+                                                 )
                 po.save()
 
     return render(request, 'order/confirm.html', {'order': order})
