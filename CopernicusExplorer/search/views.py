@@ -1,8 +1,8 @@
-#Django
+# Django
 from django.shortcuts import render
 from django.contrib.gis.geos import Polygon
 
-#local
+# local
 from .forms import SearchForm
 from .models import Product
 from order.cart import Cart

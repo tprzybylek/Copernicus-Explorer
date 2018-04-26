@@ -1,10 +1,10 @@
-#Django
+# Django
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.utils import timezone
 from django.contrib.gis.geos import GEOSGeometry
 
-#local
+# local
 from search.models import Product
 from .models import Order, ProductOrder
 from .cart import Cart
