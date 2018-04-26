@@ -1,17 +1,91 @@
 {% extends "layout.html" %}
 
 {% block name %}
+
     Wyszukiwanie
+
+{% endblock %}
+
+{%block scripts %}
+    {% load static %}
+    <script src="{% static '/js/leaflet.draw/Leaflet.draw.js' %}"></script>
+    <script src="{% static '/js/leaflet.draw/Leaflet.Draw.Event.js' %}"></script>
+    <link rel="stylesheet" href="{% static '/js/leaflet.draw/leaflet.draw.css' %}"/>
+
+    <script src="{% static '/js/leaflet.draw/Toolbar.js' %}"></script>
+    <script src="{% static '/js/leaflet.draw/Tooltip.js' %}"></script>
+
+    <script src="{% static '/js/leaflet.draw/ext/GeometryUtil.js' %}"></script>
+    <script src="{% static '/js/leaflet.draw/ext/LatLngUtil.js' %}"></script>
+    <script src="{% static '/js/leaflet.draw/ext/LineUtil.Intersect.js' %}"></script>
+    <script src="{% static '/js/leaflet.draw/ext/Polygon.Intersect.js' %}"></script>
+    <script src="{% static '/js/leaflet.draw/ext/Polyline.Intersect.js' %}"></script>
+    <script src="{% static '/js/leaflet.draw/ext/TouchEvents.js' %}"></script>
+
+    <script src="{% static '/js/leaflet.draw/draw/DrawToolbar.js' %}"></script>
+    <script src="{% static '/js/leaflet.draw/draw/handler/Draw.Feature.js' %}"></script>
+    <script src="{% static '/js/leaflet.draw/draw/handler/Draw.SimpleShape.js' %}"></script>
+    <script src="{% static '/js/leaflet.draw/draw/handler/Draw.Polyline.js' %}"></script>
+    <script src="{% static '/js/leaflet.draw/draw/handler/Draw.Marker.js' %}"></script>
+    <script src="{% static '/js/leaflet.draw/draw/handler/Draw.Circle.js' %}"></script>
+    <script src="{% static '/js/leaflet.draw/draw/handler/Draw.CircleMarker.js' %}"></script>
+    <script src="{% static '/js/leaflet.draw/draw/handler/Draw.Polygon.js' %}"></script>
+    <script src="{% static '/js/leaflet.draw/draw/handler/Draw.Rectangle.js' %}"></script>
+
+    <script src="{% static '/js/leaflet.draw/edit/EditToolbar.js' %}"></script>
+    <script src="{% static '/js/leaflet.draw/edit/handler/EditToolbar.Edit.js' %}"></script>
+    <script src="{% static '/js/leaflet.draw/edit/handler/EditToolbar.Delete.js' %}"></script>
+
+    <script src="{% static '/js/leaflet.draw/Control.Draw.js' %}"></script>
+
+    <script src="{% static '/js/leaflet.draw/edit/handler/Edit.Poly.js' %}"></script>
+    <script src="{% static '/js/leaflet.draw/edit/handler/Edit.SimpleShape.js' %}"></script>
+    <script src="{% static '/js/leaflet.draw/edit/handler/Edit.Rectangle.js' %}"></script>
+    <script src="{% static '/js/leaflet.draw/edit/handler/Edit.Marker.js' %}"></script>
+    <script src="{% static '/js/leaflet.draw/edit/handler/Edit.CircleMarker.js' %}"></script>
+    <script src="{% static '/js/leaflet.draw/edit/handler/Edit.Circle.js' %}"></script>
+
+    <script>
+        $(document).ready(function(){
+            $('#id_polarisation_mode').hide()
+            $('#id_product_type').hide()
+            $('#id_sensor_mode').hide()
+            $('#id_cloud_cover').hide()
+
+            $('#id_satellite').change(function(){
+                selected_value = $("input[name='satellite']:checked").val();
+
+                if (selected_value=='S1') {
+                    $('#id_polarisation_mode').show()
+                    $('#id_product_type').show()
+                    $('#id_sensor_mode').show()
+                    $('#id_cloud_cover').hide()
+                } else if (selected_value=='S2') {
+                    $('#id_polarisation_mode').hide()
+                    $('#id_product_type').hide()
+                    $('#id_sensor_mode').hide()
+                    $('#id_cloud_cover').show()
+                };
+            });
+        });
+    </script>
 {% endblock %}
 
 {% block content %}
-    <p>
-        Formularz wyszukiwania
-    </p>
-    <form action="/" method="post">
+
+<h1>Wyszukiwanie</h1>
+
+<div class="col" id="mapid">
+    {% load static %}
+    <script src="{% static '/js/search-form-map.js' %}"></script>
+</div>
+
+<div class="col">
+    <form action="results/" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="Szukaj" />
+        <input type="submit" class="button" value="Szukaj" />
     </form>
+</div>
 
 {% endblock %}

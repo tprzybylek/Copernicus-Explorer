@@ -2,22 +2,32 @@
 <html lang="en">
 <head>
     {% load static %}
+    <link rel="stylesheet" href="{% static '/css/style.css' %}" />
 
-    <title>CopernicusExplorer - !!nazwa podstrony!! </title>
-</head>
-<body>
-Menu:
-<ul>
-    <li>Strona główna</li>
-    <li>Pomoc</li>
-    <li>O stronie</li>
-    <li>Koszyk</li>
-</ul>
-<hr>
+    <link rel="stylesheet" href="{% static '/js/leaflet/leaflet.css' %}"/>
+    <script src="{% static '/js/leaflet/leaflet.js' %}"></script>
+    <script src="{% static '/js/jquery-3.3.1.min.js' %}"></script>
 
-    {% block content %}
-
+    {% block scripts %}
     {% endblock %}
 
+</head>
+    <title>CopernicusExplorer - {% block name %} {% endblock %} </title>
+</head>
+
+<body>
+    <div class="row">
+        <ul>
+            <li><a href="{% url 'search_form' %}">Strona główna</a></li>
+            <li>Pomoc</li>
+            <li>O stronie</li>
+            <li><a href="{% url 'cart_show_all' %}">Koszyk</a></li>
+        </ul>
+    </div>
+    <div class="row">
+        {% block content %}
+
+        {% endblock %}
+    </div>
 </body>
 </html>

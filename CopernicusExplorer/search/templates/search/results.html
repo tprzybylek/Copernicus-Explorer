@@ -4,9 +4,88 @@
     Wyniki wyszukiwania
 {% endblock %}
 
+{% block scripts %}
+
+<script>
+    function requestAddToCart(id){
+    var xhttp = new XMLHttpRequest();
+    
+    xhttp.open("POST", "{% url 'cart_add' %}", true);
+
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+
+    reqBody = "id=" + id
+
+    xhttp.send(reqBody);
+    };
+</script>
+
+<script>
+$(document).ready(function(){
+        $("tr, path").hover(function(){
+            var productClass = "." + $(this).attr("class").split(' ')[0];
+            if (productClass != '.leaflet-interactive') {
+                $(productClass).toggleClass("active");
+            }
+        });
+    });
+</script>
+
+{% endblock %}
+
 {% block content %}
-    <p>
-        Wyniki wyszukiwania
-    </p>
+    <div class="row">
+        <h1>Wyniki wyszukiwania</h1>
+    </div>
+    <div class="row" id="mapid">
+        <script>
+            var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            osm = L.tileLayer(osmUrl, { maxZoom: 18, attribution: osmAttrib }),
+            map = new L.Map('mapid', {center: new L.LatLng(52.07, 19.48), zoom: 5, minZoom: 5 }),
+            drawnItems = L.featureGroup().addTo(map);
+            osm.addTo(map);
+
+            {% if search_extent %}
+                {{ search_extent|safe }}
+            {% endif %}
+
+            {% for r_g in results_geom %}
+                {{ r_g|safe }}
+            {% endfor %}
+        </script>
+    </div>
+
+    <div class="row">
+        <table>
+            <tr>
+                <th>ID produktu</th>
+                <th>Satelita</th>
+                <th>Data pozyskania</th>
+                <th>Kierunek orbity</th>
+                <th>Typ produktu</th>
+                <th>Tryb sensora</th>
+                <th>Polaryzacja</th>
+                <th>Względny numer orbity</th>
+            </tr>
+            {% for r in results %}
+            <tr class="{{ r.id }}">
+                <td> {{ r.id }} </td>
+                <td> {{ r.satellite }} </td>
+                <td> {{ r.ingestion_date|date:'Y-m-d H:i:s' }} </td>
+                <td> {{ r.orbit_direction }} </td>
+                <td> {{ r.product_type }} </td>
+                <td> {{ r.mode }} </td>
+                <td> {{ r.polarisation_mode|default_if_none:"" }} </td>
+                <td> {{ r.relative_orbit_number }} </td>
+                <td> <button onclick="requestAddToCart('{{ r.id }}')" class="button-fill">Do koszyka</button> </td>
+                <td> <a href="https://scihub.copernicus.eu/dhus/odata/v1/Products('{{ r.id }}')/$value" class="button-fill">Pobierz</a> </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+
 
 {% endblock %}

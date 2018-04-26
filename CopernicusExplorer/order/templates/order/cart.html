@@ -1,7 +1,113 @@
 {% extends "layout.html" %}
 
+{% block scripts %}
+
+<script>
+    function requestRemoveFromCart(id){
+        var xhttp = new XMLHttpRequest();
+
+        xhttp.open("POST", "{% url 'cart_remove' %}", true);
+
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+
+        xhttp.onreadystatechange = function () {
+            if(xhttp.readyState === XMLHttpRequest.DONE && xhttp.status === 200) {
+
+            var elem = document.getElementById(id);
+            elem.parentNode.removeChild(elem);
+            }
+        };
+
+        reqBody = "id=" + id
+        xhttp.send(reqBody);
+    };
+
+    function requestEmptyCart(){
+        var xhttp = new XMLHttpRequest();
+
+        xhttp.open("POST", "{% url 'cart_empty' %}", true);
+
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+
+        xhttp.send();
+    };
+</script>
+
+<script>
+$(document).ready(function(){
+        $("tr, path").hover(function(){
+            var productClass = "." + $(this).attr("class").split(' ')[0];
+            if (productClass != '.leaflet-interactive') {
+                console.log(productClass)
+                //$(this).toggleClass("active");
+                $(productClass).toggleClass("active");
+            }
+        });
+    });
+</script>
+
+{% endblock %}
+
 {% block content %}
-    <p>
-        Twój koszyk
-    </p>
+    <div class="row">
+        <h1>Twój koszyk</h1>
+    </div>
+
+    <div class="row" id="mapid">
+        <script>
+            var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            osm = L.tileLayer(osmUrl, { maxZoom: 18, attribution: osmAttrib }),
+            map = new L.Map('mapid', {center: new L.LatLng(52.07, 19.48), zoom: 5, minZoom: 5 }),
+            drawnItems = L.featureGroup().addTo(map);
+            osm.addTo(map);
+
+            {{ search_extent|safe }}
+
+            {% for i_g in items_geom %}
+                {{ i_g|safe }}
+            {% endfor %}
+        </script>
+    </div>
+
+    <div class="row">
+        <h2>Produkty w koszyku</h2>
+        <table>
+            <tr>
+                <th>ID produktu</th>
+                <th>Satelita</th>
+                <th>Data pozyskania</th>
+                <th>Kierunek orbity</th>
+                <th>Typ produktu</th>
+                <th>Tryb sensora</th>
+                <th>Względny numer orbity</th>
+            </tr>
+            {% for p in cart %}
+            <tr class="{{ p.id }}">
+                <td>{{ p.id }}</td>
+                <td>{{ p.satellite }}</td>
+                <td> {{ p.ingestion_date|date:'Y-m-d H:i:s' }} </td>
+                <td> {{ p.orbit_direction }} </td>
+                <td> {{ p.product_type }} </td>
+                <td> {{ p.mode }} </td>
+                <td> {{ p.relative_orbit_number }} </td>
+                <td><button onclick="requestRemoveFromCart('{{ p.id }}')" class="button-fill">Usuń</button></td>
+            </tr>
+        {% endfor %}
+        </table>
+
+        <button onclick="requestEmptyCart('{{ p.id }}')" class="button">Opróżnij koszyk</button>
+    </div>
+
+    <div class="row">
+        <h2>Zamówienie</h2>
+        <form action="{% url 'order_confirm' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" class="button" value="Złóż zamówienie" />
+        </form>
+    </div>
+
 {% endblock %}

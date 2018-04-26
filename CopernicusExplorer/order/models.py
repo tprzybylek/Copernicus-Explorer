@@ -1,18 +1,35 @@
-import random
-from django.contrib.gis.db import models
-from django.db import IntegrityError
-from datetime import datetime
+from django.contrib.gis.db.models import PolygonField
+from django.db import models
+from search.models import Product
+
+
+class Order(models.Model):
+    e_mail = models.EmailField()
+    ordered_date_time = models.DateTimeField()
+    completed_date_time = models.DateTimeField(null=True, blank=True)
+
+    STATUS_WAITING = 0
+    STATUS_PENDING = 1
+    STATUS_COMPLETE = 2
+    STATUS_ERR = 3
+
+    STATUS_CHOICES = (
+        (STATUS_WAITING, 'Waiting'),
+        (STATUS_PENDING, 'Pending'),
+        (STATUS_COMPLETE, 'Complete'),
+        (STATUS_ERR, 'Err')
+    )
+
+    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICES)
+    clip_extent = PolygonField()
+
+    def __str__(self):
+        return self.pk
 
 
 class ProductOrder(models.Model):
-    ImageID = models.CharField(max_length=36)
-    OrderID = models.IntegerField()
-    def __str__(self):
-        return '%s %s' % (self.imageID, self.orderID)
+    product_id = models.ForeignKey(Product, on_delete='CASCADE')
+    order_id = models.ForeignKey(Order, on_delete='CASCADE')
 
-class Order(models.Model):
-    OrderID = models.AutoField(primary_key=True)
-    Email = models.CharField(max_length=50)
-    OrderedDateTime = datetime.now()
-    CompletedDateTime = models.DateTimeField()
-    ClipExtent = models.PolygonField()
+    def __str__(self):
+        return self.product_id
