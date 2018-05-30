@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 import json
+from celery.schedules import crontab
 
 
 passwords = json.load(open('/home/tomasz/PycharmProjects/copernicus-django/passwords.json'))
@@ -154,3 +155,21 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "CopernicusExplorer/static")
 ]
+
+# Celery application definition
+# http://docs.celeryproject.org/en/v4.0.2/userguide/configuration.html
+#
+# cd /home/tomasz/PycharmProjects/copernicus-django/CopernicusExplorer
+# celery -A CopernicusExplorer worker -l info -B
+CELERY_BROKER_URL = 'amqp://localhost//'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'CET'
+CELERY_IMPORTS = ['search.tasks', 'order.tasks']
+CELERY_BEAT_SCHEDULE = {
+    'update_database': {
+        'task': 'search.tasks.update_database',
+        'schedule': crontab(hour='*/8'),
+    }
+}

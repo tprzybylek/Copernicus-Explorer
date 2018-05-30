@@ -84,7 +84,11 @@ def get_product(position):
                     product['ingestiondate'] = datetime.strptime(attribute.text, '%Y-%m-%dT%H:%M:%S.%fZ')
                 except ValueError:
                     product['ingestiondate'] = datetime.strptime(attribute.text, '%Y-%m-%dT%H:%M:%SZ')
-
+            elif attribute.attrib['name'] == 'endposition':
+                try:
+                    product['sensingdate'] = datetime.strptime(attribute.text, '%Y-%m-%dT%H:%M:%S.%fZ')
+                except ValueError:
+                    product['sensingdate'] = datetime.strptime(attribute.text, '%Y-%m-%dT%H:%M:%SZ')
             elif attribute.attrib['name'] == 'footprint':
                 feature['geometry']['coordinates'] = attribute.text
             elif attribute.attrib['name'] == 'orbitnumber':
@@ -113,8 +117,8 @@ def get_product(position):
 def build_query():
     sql_query = "INSERT INTO search_product (id, title, ingestion_date, satellite, " \
                 "mode, orbit_direction, cloud_cover, polarisation_mode, product_type, " \
-                "relative_orbit_number, size, coordinates) " \
-                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                "relative_orbit_number, size, coordinates, sensing_date) " \
+                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
     if 'cloudcoverpercentage' not in feature['properties']:
         feature['properties']['cloudcoverpercentage'] = None
@@ -133,7 +137,8 @@ def build_query():
         feature['properties']['producttype'],
         feature['properties']['relativeorbitnumber'],
         size_to_bytes(feature['properties']['size']),
-        'SRID=4326;' + feature['geometry']['coordinates']
+        'SRID=4326;' + feature['geometry']['coordinates'],
+        feature['properties']['sensingdate']
     ]
 
     print(sql_data)

@@ -21,7 +21,7 @@ ESA_FILE_URI = "https://scihub.copernicus.eu/dhus/odata/v1/" \
                "Products('{id}')/$value"
 ESA_BOUNDARIES_WKT = 'POLYGON((14.17 54.14, 18.19 55.00, 23.69 54.35, 24.26 50.50, ' \
                      '23.00 49.00, 19.00 49.18, 14.68 50.73, 14.02 52.84, 14.17 54.14))'
-ESA_DOWNLOAD_PATH = '/home/rimmon/webdysk/ESA/ESA2/'
+ESA_DOWNLOAD_PATH = '/home/tomasz/PycharmProjects/copernicus-django/Scripts/Test/'
 
 
 class MetadataDownloader:

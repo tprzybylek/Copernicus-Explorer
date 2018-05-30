@@ -10,6 +10,8 @@ from .models import Order, ProductOrder
 from .cart import Cart
 from .forms import OrderForm
 
+from order.tasks import perform_order
+
 
 # Create your views here.
 
@@ -104,4 +106,5 @@ def order_confirm(request):
                                                  )
                 po.save()
 
+            perform_order.delay(order['id'])
     return render(request, 'order/confirm.html', {'order': order})
