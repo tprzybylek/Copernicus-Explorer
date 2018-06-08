@@ -22,9 +22,19 @@ class Order(models.Model):
 
     status = models.PositiveSmallIntegerField(choices=STATUS_CHOICES)
     clip_extent = PolygonField()
+    products = models.ManyToManyField(Product)
 
     def __str__(self):
-        return self.pk
+        return str(self.pk)
+
+    def extent(self):
+        extent = self.clip_extent.extent
+        return {
+            'min_x': extent[0],
+            'min_y': extent[1],
+            'max_x': extent[2],
+            'max_y': extent[3]
+        }
 
 
 class ProductOrder(models.Model):
