@@ -2,9 +2,11 @@ from __future__ import absolute_import, unicode_literals
 from celery import shared_task
 
 import os
+import sys
 import shutil
+import zipfile
 
-from datetime import timedelta
+
 from django.utils import timezone
 from django.conf import settings
 
@@ -15,12 +17,21 @@ from datetime import timedelta
 import time
 import json
 
+import numpy as np
+
+from osgeo import gdal, gdalnumeric, ogr, osr
+from PIL import Image, ImageDraw
+
 from django.contrib.gis.geos import GEOSGeometry
 from .models import Product
 
 import imageryutil
 
-BASE_DIR = os.path.join(settings.BASE_DIR, 'CopernicusExplorer/static/imagery')
+BASE_DIR = settings.BASE_DIR
+TEMP_DIR = os.path.join(BASE_DIR, 'data/temp')
+ORDERS_DIR = os.path.join(BASE_DIR, 'data/orders')
+IMAGERY_DIR = os.path.join(BASE_DIR, 'data/imagery')
+SHP_PATH = os.path.join(BASE_DIR, 'data/shp/PL.shp')
 
 @shared_task
 def update_database():
@@ -370,6 +381,184 @@ def clip_image_tiff(id, title, filename, sourceImagePath, outputImagePath):
     final_image.FlushCache()
     final_image = None
 
+def clip_image_jp2(filename, sourceImagePath, outputImagePath):
+    def imageToArray(i):
+        """
+        Converts a Python Imaging Library array to a
+        gdalnumeric image.
+        """
+        a = gdalnumeric.fromstring(i.tobytes(), 'b')
+        a.shape = i.im.size[1], i.im.size[0]
+        return a
+
+    def arrayToImage(a):
+        """
+        Converts a gdalnumeric array to a
+        Python Imaging Library Image.
+        """
+        i = Image.fromstring('L', (a.shape[1], a.shape[0]),
+                             (a.astype('b')).tostring())
+        return i
+
+    def world2Pixel(geoMatrix, x, y):
+        """
+        Uses a gdal geomatrix (gdal.GetGeoTransform()) to calculate
+        the pixel location of a geospatial coordinate
+        """
+
+        ulX = geoMatrix[0]
+        ulY = geoMatrix[3]
+        xDist = geoMatrix[1]
+        yDist = geoMatrix[5]
+        rtnX = geoMatrix[2]
+        rtnY = geoMatrix[4]
+        pixel = int((x - ulX) / xDist)
+        line = int((y - ulY) / yDist)
+        return (pixel, line)
+
+    def getGeometryExtent(points):
+        ## Convert the layer extent to image pixel coordinates V2?
+        minX = min(points, key=lambda x: x[0])[0]
+        maxX = max(points, key=lambda x: x[0])[0]
+        minY = min(points, key=lambda x: x[1])[1]
+        maxY = max(points, key=lambda x: x[1])[1]
+        return minX, maxX, minY, maxY
+
+    SOURCE_IMAGE_PATH = os.path.join(sourceImagePath, filename + '.jp2')
+    FINAL_IMAGE_PATH = os.path.join(outputImagePath, filename + '.jp2')
+
+    ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+
+    srcImage = gdal.Open(os.path.join(sourceImagePath, filename + '.jp2'))
+    gdal.Warp(os.path.join(sourceImagePath, filename + '_WGS84.jp2'), srcImage, dstSRS='EPSG:4326')
+
+    ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+
+    srcImage = gdal.Open(os.path.join(sourceImagePath, filename + '_WGS84.jp2'))
+    srcArray = gdalnumeric.LoadFile(os.path.join(sourceImagePath, filename + '_WGS84.jp2'))
+    geoTrans = srcImage.GetGeoTransform()
+
+    sourceMinRasterX = geoTrans[0]
+    xPixelSize = geoTrans[1]
+    sourceMaxRasterY = geoTrans[3]
+    yPixelSize = geoTrans[5]
+
+    sourceRasterHeight = srcImage.RasterYSize
+    sourceRasterWidth = srcImage.RasterXSize
+
+    sourceMaxRasterX = sourceMinRasterX + (sourceRasterWidth * xPixelSize)
+    sourceMinRasterY = sourceMaxRasterY + (sourceRasterHeight * yPixelSize)
+
+    # Create an OGR layer from a boundary shapefile
+    shapefile = ogr.Open(SHP_PATH)
+    lyr = shapefile.GetLayer("PL")
+    poly = lyr.GetNextFeature()
+    cutterGeometry = poly.GetGeometryRef()
+
+    rasterWKT = "POLYGON ((%s %s, %s %s, %s %s, %s %s, %s %s))" % (
+    str(sourceMinRasterX), str(sourceMaxRasterY), str(sourceMaxRasterX), str(sourceMaxRasterY), str(sourceMaxRasterX),
+    str(sourceMinRasterY), str(sourceMinRasterX), str(sourceMinRasterY), str(sourceMinRasterX), str(sourceMaxRasterY))
+
+    rasterGeometry = ogr.CreateGeometryFromWkt(rasterWKT)
+
+    shapei = cutterGeometry.Intersection(rasterGeometry)
+
+    pts = shapei.GetGeometryRef(0)
+    points = []
+    for p in range(pts.GetPointCount()):
+        points.append((pts.GetX(p), pts.GetY(p)))
+    minX, maxX, minY, maxY = getGeometryExtent(points)
+
+    ulX, ulY = world2Pixel(geoTrans, minX, maxY)
+    lrX, lrY = world2Pixel(geoTrans, maxX, minY)
+
+    if (ulX < 0):
+        ulX = 0
+    if (ulY < 0):
+        ulY = 0
+    if (lrX > sourceRasterWidth):
+        lrX = sourceRasterWidth
+    if (lrY > sourceRasterHeight):
+        lrY = sourceRasterHeight
+
+    pxWidth = int(lrX - ulX)
+    pxHeight = int(lrY - ulY)
+
+    clip = srcArray[ulY:lrY, ulX:lrX]
+
+    # Create a new geomatrix for the image
+    geoTrans = list(geoTrans)
+    geoTrans[0] = minX
+    geoTrans[3] = maxY
+
+    pixels = []
+
+    for p in points:
+        pixels.append(world2Pixel(geoTrans, p[0], p[1]))
+
+    rasterPoly = Image.new("L", (pxWidth, pxHeight), 1)
+    rasterize = ImageDraw.Draw(rasterPoly)
+    rasterize.polygon(pixels, 0)
+    mask = imageToArray(rasterPoly)
+
+    ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+
+    try:
+        clip = gdalnumeric.choose(mask, (clip, 0)).astype(gdalnumeric.uint16)
+    except ValueError:
+        clip = mask
+
+    ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+
+    # pxWidth = lrX - ulX
+    # pxHeight = lrY - ulY
+
+    FINAL_IMAGE_PATH = os.path.join(outputImagePath, filename + '.tiff')
+
+    print(filename)
+
+    driver = gdal.GetDriverByName('GTiff')
+    final_image = driver.Create(FINAL_IMAGE_PATH, pxWidth, pxHeight, 1, gdal.GDT_UInt16)
+    final_image.GetRasterBand(1).WriteArray(clip)
+
+    proj = srcImage.GetProjection()
+    final_image.SetGeoTransform(geoTrans)
+    final_image.SetProjection(proj)
+    final_image.FlushCache()
+    final_image = None
+
+def zip_product(id, title):
+    """
+    Zips a requested order to the /ORDERS_PATH/order_id.zip file
+    :param str order_id: Order ID
+    """
+
+    folder_path = os.path.join(TEMP_DIR, title)
+    output_path = os.path.join(IMAGERY_DIR, id + '.zip')
+
+    parent_folder = os.path.dirname(folder_path)
+
+    contents = os.walk(folder_path)
+
+    try:
+        zipFile = zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED)
+        for root, folders, files in contents:
+            for folder_name in folders:
+                absolute_path = os.path.join(root, folder_name)
+                relative_path = absolute_path.replace(parent_folder + '/', '')
+                zipFile.write(absolute_path, relative_path)
+
+            for file_name in files:
+                absolute_path = os.path.join(root, file_name)
+                relative_path = absolute_path.replace(parent_folder + '/', '')
+                zipFile.write(absolute_path, relative_path)
+    except IOError:
+        sys.exit(1)
+    finally:
+        zipFile.close()
+
+    shutil.rmtree(folder_path)
+
 def iterate_product(id, title, satellite):
     """
     Iterates over downloaded product content and calls the clip function for each imagery file (*.tiff or *.jp2).
@@ -393,6 +582,8 @@ def iterate_product(id, title, satellite):
 
                 clip_image_tiff(id, title, image[:-5], source_image_path, output_image_path)
 
+        zip_product(id, title)
+
     elif (satellite[:2] == 'S2'):
         subfolder = os.listdir(os.path.join(TEMP_DIR, id, title + '.SAFE', 'GRANULE'))
         if title[4:10] == 'MSIL2A':
@@ -403,20 +594,23 @@ def iterate_product(id, title, satellite):
                 for subsub in subsubfolder:
 
                     if not os.path.exists(os.path.join(TEMP_DIR, title, sub, subsub)):
-                        os.makedirs(os.path.join(TEMP_DIR, sub, title, subsub))
+                        os.makedirs(os.path.join(TEMP_DIR, title, sub, subsub))
 
                     for image in os.listdir(os.path.join(TEMP_DIR, id, title + '.SAFE', 'GRANULE', sub, 'IMG_DATA', subsub)):
-                        if image.endswith('.jp2'):
+                        if image.endswith('.jp2') and image[-11:-9] != 'SCL':
 
                             # orders/40/S2A_MSIL2A_20180529T101031_N0208_R022_T33UVS_20180529T112942/L2A_T33UVS_A015320_20180529T101225/R20m/T33UVS_20180529T101031_B07_20m/.tiff
 
-                            source_image_path = os.path.join(TEMP_DIR, id, title + '.SAFE', 'GRANULE', sub, 'IMG_DATA', subsub, image)
-                            output_image_path = os.path.join(TEMP_DIR, sub, title, subsub, image[:-4])
+                            source_image_path = os.path.join(TEMP_DIR, id, title + '.SAFE', 'GRANULE', sub, 'IMG_DATA', subsub)
+                            output_image_path = os.path.join(TEMP_DIR, title, sub, subsub)
 
                             print(source_image_path)
                             print(output_image_path)
 
-                            #clip_image_jp2(title, source_image_path, output_image_path)
+                            clip_image_jp2(image[:-4], source_image_path, output_image_path)
+
+
+
         else:
             for sub in subfolder:
                 if not os.path.exists(os.path.join(TEMP_DIR, title, sub)):
@@ -424,9 +618,11 @@ def iterate_product(id, title, satellite):
 
                 for image in os.listdir(os.path.join(TEMP_DIR, id, title + '.SAFE', 'GRANULE', sub, 'IMG_DATA')):
                     if image.endswith('.jp2'):
-                        source_image_path = os.path.join(TEMP_DIR, id, title + '.SAFE', 'GRANULE', sub, 'IMG_DATA', image)
-                        output_image_path = os.path.join(TEMP_DIR, title, sub, image[:-4])
-                        clip_image_jp2(title, source_image_path, output_image_path)
+                        source_image_path = os.path.join(TEMP_DIR, id, title + '.SAFE', 'GRANULE', sub, 'IMG_DATA')
+                        output_image_path = os.path.join(TEMP_DIR, title, sub)
+                        clip_image_jp2(image[:-4], source_image_path, output_image_path)
+
+        zip_product(id, title)
 
 
 @shared_task
@@ -453,6 +649,8 @@ def rolling_archive():
     for product in fresh_products:
         imageryutil.download_product(product.id)
         imageryutil.unzip_product(product.id)
+
+        shutil.rmtree(os.path.join(TEMP_DIR, product.id + '.zip'))
 
         iterate_product(product.id, product.title, product.satellite)
 
