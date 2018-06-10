@@ -1,14 +1,26 @@
 from __future__ import absolute_import, unicode_literals
 from celery import shared_task
 
+import os
+import shutil
+
+from datetime import timedelta
+from django.utils import timezone
+from django.conf import settings
+
 import xml.etree.ElementTree
 import requests
 from datetime import datetime
 from datetime import timedelta
-import psycopg2
 import time
 import json
 
+from django.contrib.gis.geos import GEOSGeometry
+from .models import Product
+
+import imageryutil
+
+BASE_DIR = os.path.join(settings.BASE_DIR, 'CopernicusExplorer/static/imagery')
 
 @shared_task
 def update_database():
@@ -101,50 +113,27 @@ def update_database():
                 elif attribute.attrib['name'] == 'productclass' and satellite[:2] == 'S1':
                     product['productclass'] = attribute.text
                 elif attribute.attrib['name'] == 'cloudcoverpercentage' and satellite[:2] == 'S2':
-                    product['cloudcoverpercentage'] = attribute.text
+                    product['cloudcover'] = attribute.text
                 elif attribute.attrib['name'] == 'processingbaseline' and satellite[:2] == 'S2':
                     product['processingbaseline'] = attribute.text
                 elif attribute.attrib['name'] == 'processinglevel' and satellite[:2] == 'S2':
                     product['processinglevel'] = attribute.text
+
+        if 'cloudcover' not in product:
+            product['cloudcover'] = None
+
+        if 'polarisationmode' not in product:
+            product['polarisationmode'] = None
+            product['mode'] = 'MSIL'
+
+        if product['mode'] == 'Earth Observation':
+            product['mode'] = 'EO'
+
+        if len(product['producttype']) > 8:
+            product['producttype'] = product['producttype'][:8]
+
+        product['isdownloaded'] = False
         return product
-
-    def build_query():
-        sql_query = "INSERT INTO search_product (id, title, ingestion_date, satellite, " \
-                    "mode, orbit_direction, cloud_cover, polarisation_mode, product_type, " \
-                    "relative_orbit_number, size, coordinates, sensing_date, is_downloaded) " \
-                    "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-
-        if 'cloudcoverpercentage' not in feature['properties']:
-            feature['properties']['cloudcoverpercentage'] = None
-
-        if 'polarisationmode' not in feature['properties']:
-            feature['properties']['polarisationmode'] = None
-            feature['properties']['mode'] = 'MSIL'
-
-        if feature['properties']['mode'] == 'Earth Observation':
-            feature['properties']['mode'] = 'EO'
-
-        if len(feature['properties']['producttype']) > 8:
-            feature['properties']['producttype'] = feature['properties']['producttype'][:8]
-
-        sql_data = [
-            feature['properties']['id'],
-            feature['properties']['title'],
-            feature['properties']['ingestiondate'],
-            feature['properties']['satellite'],
-            feature['properties']['mode'],
-            feature['properties']['orbitdirection'],
-            feature['properties']['cloudcoverpercentage'],
-            feature['properties']['polarisationmode'],
-            feature['properties']['producttype'],
-            feature['properties']['relativeorbitnumber'],
-            size_to_bytes(feature['properties']['size']),
-            'SRID=4326;' + feature['geometry']['coordinates'],
-            feature['properties']['sensingdate'],
-            False
-        ]
-
-        return sql_query, sql_data
 
     last_update = get_last_update()
 
@@ -152,7 +141,7 @@ def update_database():
 
     while last_update['lastUpdateTimeDifference'] > 3600 * 8:
 
-        queryURI = 'https://scihub.copernicus.eu/apihub/search?q=ingestiondate:[' + last_update[
+        query_uri = 'https://scihub.copernicus.eu/apihub/search?q=ingestiondate:[' + last_update[
             'lastUpdateTime'].isoformat() + 'Z%20TO%20NOW]%20AND%20footprint:%22Intersects(' \
                                             'POLYGON((14.17%2054.14,18.19%2055.00,' \
                                             '23.69%2054.35,24.26%2050.50,' \
@@ -161,11 +150,7 @@ def update_database():
                                             '14.17%2054.14)))%22' \
                                             '&orderby=ingestiondate%20asc&rows=100'
 
-        xmldoc = get_xml(queryURI)
-
-        conn = psycopg2.connect(host="localhost", port="5432", database="copernicusexplorer",
-                                user="django", password="CopExp2018")
-        cur = conn.cursor()
+        xmldoc = get_xml(query_uri)
 
         namespace = '{http://www.w3.org/2005/Atom}'
 
@@ -178,30 +163,298 @@ def update_database():
                 }
             }
 
-            product = get_product(entry)
+            feature['properties'] = get_product(entry)
 
-            last_product_time = product['ingestiondate']
+            last_product_time = feature['properties']['ingestiondate']
 
-            # product['ingestiondate'] = product['ingestiondate'].__format__('%Y-%m-%d %H:%M:%S.%f')
+            print(feature['properties']['id'])
+            print(feature['properties']['satellite'])
+            print(feature['properties']['producttype'])
+            print(feature['properties']['ingestiondate'].__format__('%Y-%m-%d %H:%M:%S.%f'))
 
-            feature['properties'] = product
+            new_product = Product.objects.create(
+                id=feature['properties']['id'],
+                title=feature['properties']['title'],
+                ingestion_date=feature['properties']['ingestiondate'],
+                satellite=feature['properties']['satellite'],
+                mode=feature['properties']['mode'],
+                orbit_direction=feature['properties']['orbitdirection'],
+                cloud_cover=feature['properties']['cloudcover'],
+                polarisation_mode=feature['properties']['polarisationmode'],
+                product_type=feature['properties']['producttype'],
+                relative_orbit_number=feature['properties']['relativeorbitnumber'],
+                size=size_to_bytes(feature['properties']['size']),
+                coordinates=GEOSGeometry(feature['geometry']['coordinates'], srid=4326),
+                sensing_date=feature['properties']['sensingdate'],
+                is_downloaded=feature['properties']['isdownloaded'],
+            )
 
-            print(product['id'])
-            print(product['satellite'])
-            print(product['producttype'])
-            print(product['ingestiondate'].__format__('%Y-%m-%d %H:%M:%S.%f'))
+            new_product.save()
 
-            sql, data = build_query()
-            cur.execute(sql, data)
-
-        conn.commit()
-        cur.close()
-        conn.close()
         write_update_time('200', last_product_time)
-        print('DB update successful')
         print('Waiting 15 secs')
         time.sleep(15)
 
         last_update = get_last_update()
     else:
         print("DB update complete")
+
+def clip_image_tiff(id, title, filename, sourceImagePath, outputImagePath):
+    def imageToArray(i):
+        """
+        Converts a Python Imaging Library array to a
+        gdalnumeric image.
+        """
+        a = gdalnumeric.fromstring(i.tobytes(), 'b')
+        a.shape = i.im.size[1], i.im.size[0]
+        return a
+
+    def arrayToImage(a):
+        """
+        Converts a gdalnumeric array to a
+        Python Imaging Library Image.
+        """
+        i = Image.fromstring('L', (a.shape[1], a.shape[0]),
+                             (a.astype('b')).tostring())
+        return i
+
+    def world2Pixel(geoMatrix, x, y):
+        """
+        Uses a gdal geomatrix (gdal.GetGeoTransform()) to calculate
+        the pixel location of a geospatial coordinate
+        """
+
+        ulX = geoMatrix[0]
+        ulY = geoMatrix[3]
+        xDist = geoMatrix[1]
+        yDist = geoMatrix[5]
+        rtnX = geoMatrix[2]
+        rtnY = geoMatrix[4]
+        pixel = int((x - ulX) / xDist)
+        line = int((y - ulY) / yDist)
+        return (pixel, line)
+
+    def getGeometryExtent(points):
+        ## Convert the layer extent to image pixel coordinates V2?
+        minX = min(points, key=lambda x: x[0])[0]
+        maxX = max(points, key=lambda x: x[0])[0]
+        minY = min(points, key=lambda x: x[1])[1]
+        maxY = max(points, key=lambda x: x[1])[1]
+        return minX, maxX, minY, maxY
+
+    def GetPixelCoords(col, row):
+        xp = a * col + b * row + a * 0.5 + b * 0.5 + c
+        yp = d * col + e * row + d * 0.5 + e * 0.5 + f
+        return (xp, yp)
+
+    wkt_projection = 'GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]'
+
+    ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+
+    SOURCE_IMAGE_PATH = os.path.join(sourceImagePath, filename + '.tiff')
+    FINAL_IMAGE_PATH = os.path.join(outputImagePath, filename + '.tiff')
+
+    source_image = gdal.Open(SOURCE_IMAGE_PATH)
+
+    gcps = source_image.GetGCPs()
+
+    gcp_x = []
+    gcp_y = []
+
+    for a, val in enumerate(gcps):
+        gcp_x.append(gcps[a].GCPX)
+        gcp_y.append(gcps[a].GCPY)
+
+    geotransform = {'minX': min(gcp_x), 'maxX': max(gcp_x), 'minY': min(gcp_y), 'maxY': max(gcp_y)}
+
+    error_threshold = 0.125
+    resampling = gdal.GRA_NearestNeighbour
+    middle_image = gdal.AutoCreateWarpedVRT(source_image, None, wkt_projection, resampling, error_threshold)
+
+    source_image = None
+
+    cols = middle_image.RasterXSize
+    rows = middle_image.RasterYSize
+
+    geotransform = [geotransform['minX'], (geotransform['maxX'] - geotransform['minX']) / cols, 0,
+                    geotransform['maxY'], 0, (geotransform['maxY'] - geotransform['minY']) / rows * (-1)]
+
+    c, a, b, f, d, e = middle_image.GetGeoTransform()
+
+    xOrigin = geotransform[0]
+    yOrigin = geotransform[3]
+    pixelWidth = geotransform[1]
+    pixelHeight = geotransform[5]
+
+    sourceMaxRasterX = xOrigin + (cols * pixelWidth)
+    sourceMinRasterY = yOrigin + (rows * pixelHeight)
+
+    ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+
+    shapefile = ogr.Open(SHP_PATH)
+    lyr = shapefile.GetLayer("PL")
+    poly = lyr.GetNextFeature()
+    cutterGeometry = poly.GetGeometryRef()
+
+    # str(xOrigin) + ' ' + str(yOrigin) + ',' + str(sourceMaxRasterX), str(yOrigin),str(sourceMaxRasterX), str(sourceMinRasterY),str(xOrigin), str(sourceMinRasterY),str(xOrigin), str(yOrigin)
+
+    image_WKT = 'POLYGON ((' + str(xOrigin) + ' ' + str(yOrigin) + ',' + str(sourceMaxRasterX) + ' ' + str(yOrigin) + ',' + str(sourceMaxRasterX) + ' ' + str(sourceMinRasterY) + ',' + str(xOrigin) + ' ' + str(sourceMinRasterY) + ',' + str(xOrigin) + ' ' + str(yOrigin) + '))'
+
+    rasterGeometry = ogr.CreateGeometryFromWkt(image_WKT)
+
+    shapei = cutterGeometry.Intersection(rasterGeometry)
+
+    pts = shapei.GetGeometryRef(0)
+    points = []
+    for p in range(pts.GetPointCount()):
+        points.append((pts.GetX(p), pts.GetY(p)))
+    minX, maxX, minY, maxY = getGeometryExtent(points)
+
+    ulX, ulY = world2Pixel(geotransform, minX, maxY)
+    lrX, lrY = world2Pixel(geotransform, maxX, minY)
+
+    print(ulX, ulY, lrX, lrY)
+
+    # srcArray = gdalnumeric.LoadFile(srcImage_path)
+
+    # np.array(ds.GetRasterBand(1).ReadAsArray())
+
+    #middle_array = gdalnumeric.LoadFile(srcImage_path)
+
+    middle_array = np.array(middle_image.GetRasterBand(1).ReadAsArray())
+
+
+    # geoTrans = srcImage.GetGeoTransform() ???
+    # geoTrans = middle_image.GetGeoTransform()
+
+    if (ulX < 0):
+        ulX = 0
+    if (ulY < 0):
+        ulY = 0
+    if (lrX > cols):
+        lrX = cols
+    if (lrY > rows):
+        lrY = rows
+
+    pxWidth = int(lrX - ulX)
+    pxHeight = int(lrY - ulY)
+
+    clip = middle_array[ulY:lrY, ulX:lrX]
+
+    geoTrans = list(geotransform)
+    geoTrans[0] = minX
+    geoTrans[3] = maxY
+
+    pixels = []
+
+    for p in points:
+        pixels.append(world2Pixel(geoTrans, p[0], p[1]))
+
+    rasterPoly = Image.new("L", (pxWidth, pxHeight), 1)
+    rasterize = ImageDraw.Draw(rasterPoly)
+    rasterize.polygon(pixels, 0)
+    mask = imageToArray(rasterPoly)
+
+    try:
+        clip = gdalnumeric.choose(mask, (clip, 0)).astype(gdalnumeric.uint16)
+    except ValueError:
+        clip = mask
+
+    driver = gdal.GetDriverByName('GTiff')
+    final_image = driver.Create(FINAL_IMAGE_PATH, pxWidth, pxHeight, 1, gdal.GDT_UInt16)
+    final_image.GetRasterBand(1).WriteArray(clip)
+
+    proj = middle_image.GetProjection()
+    final_image.SetGeoTransform(geoTrans)
+    final_image.SetProjection(proj)
+    final_image.FlushCache()
+    final_image = None
+
+def iterate_product(id, title, satellite):
+    """
+    Iterates over downloaded product content and calls the clip function for each imagery file (*.tiff or *.jp2).
+
+    :param obj product: django.models Product object
+    :param obj order: django.models Order object
+    """
+
+    if (satellite[:2] == 'S1'):
+        if not os.path.exists(os.path.join(TEMP_DIR, title)):
+            os.makedirs(os.path.join(TEMP_DIR, title))
+
+        for image in os.listdir(os.path.join(TEMP_DIR, id, title + '.SAFE', 'measurement')):
+            if image.endswith('.tiff'):
+                source_image_path = os.path.join(TEMP_DIR, id, title + '.SAFE', 'measurement')
+                output_image_path = os.path.join(TEMP_DIR, title)
+
+                print(source_image_path)
+                print(output_image_path)
+                print(image)
+
+                clip_image_tiff(id, title, image[:-5], source_image_path, output_image_path)
+
+    elif (satellite[:2] == 'S2'):
+        subfolder = os.listdir(os.path.join(TEMP_DIR, id, title + '.SAFE', 'GRANULE'))
+        if title[4:10] == 'MSIL2A':
+            for sub in subfolder:
+
+                subsubfolder = os.listdir(os.path.join(TEMP_DIR, id, title + '.SAFE', 'GRANULE', sub, 'IMG_DATA'))
+
+                for subsub in subsubfolder:
+
+                    if not os.path.exists(os.path.join(TEMP_DIR, title, sub, subsub)):
+                        os.makedirs(os.path.join(TEMP_DIR, sub, title, subsub))
+
+                    for image in os.listdir(os.path.join(TEMP_DIR, id, title + '.SAFE', 'GRANULE', sub, 'IMG_DATA', subsub)):
+                        if image.endswith('.jp2'):
+
+                            # orders/40/S2A_MSIL2A_20180529T101031_N0208_R022_T33UVS_20180529T112942/L2A_T33UVS_A015320_20180529T101225/R20m/T33UVS_20180529T101031_B07_20m/.tiff
+
+                            source_image_path = os.path.join(TEMP_DIR, id, title + '.SAFE', 'GRANULE', sub, 'IMG_DATA', subsub, image)
+                            output_image_path = os.path.join(TEMP_DIR, sub, title, subsub, image[:-4])
+
+                            print(source_image_path)
+                            print(output_image_path)
+
+                            #clip_image_jp2(title, source_image_path, output_image_path)
+        else:
+            for sub in subfolder:
+                if not os.path.exists(os.path.join(TEMP_DIR, title, sub)):
+                    os.makedirs(os.path.join(TEMP_DIR, title, sub))
+
+                for image in os.listdir(os.path.join(TEMP_DIR, id, title + '.SAFE', 'GRANULE', sub, 'IMG_DATA')):
+                    if image.endswith('.jp2'):
+                        source_image_path = os.path.join(TEMP_DIR, id, title + '.SAFE', 'GRANULE', sub, 'IMG_DATA', image)
+                        output_image_path = os.path.join(TEMP_DIR, title, sub, image[:-4])
+                        clip_image_jp2(title, source_image_path, output_image_path)
+
+
+@shared_task
+def rolling_archive():
+    # time_range_end = timezone.now()
+    # time_range_start = time_range_end - timedelta(days=14)
+
+    time_range_end = timezone.now()
+    time_range_start = time_range_end - timedelta(hours=6)
+
+    expired_products = Product.objects.filter(is_downloaded=True, ingestion_date__lt=time_range_start)
+    print(expired_products)
+
+    for product in expired_products:
+        shutil.rmtree(os.path.join(BASE_DIR, product.id + '.zip'))
+        product.is_downloaded = False
+        product.save()
+
+    print('deleted expired products')
+
+    fresh_products = Product.objects.filter(is_downloaded=False, ingestion_date__gte=time_range_start, product_type='GRD')
+    print(fresh_products)
+
+    for product in fresh_products:
+        imageryutil.download_product(product.id)
+        imageryutil.unzip_product(product.id)
+
+        iterate_product(product.id, product.title, product.satellite)
+
+        product.is_downloaded = True
+        product.save()
