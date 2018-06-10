@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h1>Szczegóły zamówienia</h1>
+
+    <p>ID zamówienia: {{ order.id }}</p>
+    <p>Status zamówienia: {{ order.status }}</p>
+    <p>Data złożenia zamówienia: {{ order.ordered_date_time }}</p>
+
+    {% if order.status == 0 %}
+        <p>Zamówienie oczekuje na realizację</p>
+    {% elif order.status == 1 %}
+        <p>Zamówienie jest w trakcie realizacji</p>
+    {% elif order.status == 2 %}
+        <p>Data wykonania zamówienia: {{ order.completed_date_time }}</p>
+        <p>Zamówienie będzie dostępne do pobrania przez 48h od daty jego wykonania</p>
+        <p><a href="{% url 'order_get_order' order_id=order.id %}" class="button">Pobierz zamówienie</a></p>
+    {% elif order.status == 3 %}
+        <p>Wystąpił błąd w trakcie przetwarzania zamówienia</p>
+    {% endif %}
+{% endblock %}

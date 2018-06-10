@@ -1,8 +1,13 @@
+import os
+from wsgiref.util import FileWrapper
+
 # Django
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 from django.utils import timezone
 from django.contrib.gis.geos import GEOSGeometry
+from django.conf import settings
+
 
 # local
 from search.models import Product
@@ -106,5 +111,39 @@ def order_confirm(request):
                                                  )
                 po.save()
 
+                p = Product.objects.get(id=product)
+                o.products.add(p)
+                o.save()
+
             perform_order.delay(order['id'])
     return render(request, 'order/confirm.html', {'order': order})
+
+def order_detail(request, order_id):
+    order = Order.objects.get(id=order_id)
+
+    order_details = {'id': order.pk,
+                     'status': order.status,
+                     'ordered_date_time': order.ordered_date_time,
+                     'completed_date_time': order.completed_date_time,
+                     'products': order.products.all()
+                     }
+
+    return render(request, 'order/detail.html', {'order': order_details})
+
+def get_order(request, order_id):
+    IMAGERY_DIR = os.path.join(settings.BASE_DIR, 'CopernicusExplorer/static/orders')
+    file_path = os.path.join(IMAGERY_DIR, str(order_id) + '.zip')
+    chunk_size = 8192
+
+    response = FileResponse(
+        FileWrapper(
+            open(file_path, 'rb'),
+            chunk_size
+        ),
+        content_type="application/octet-stream"
+    )
+
+    response['Content-Length'] = os.path.getsize(file_path)
+    response['Content-Disposition'] = "attachment; filename=%s" % str(order_id) + '.zip'
+
+    return response

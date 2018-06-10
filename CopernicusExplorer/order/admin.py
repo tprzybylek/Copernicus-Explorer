@@ -4,5 +4,9 @@ from django.contrib import admin
 
 from .models import Order, ProductOrder
 
-admin.site.register(Order)
+
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'ordered_date_time', 'completed_date_time', 'status')
+
+admin.site.register(Order, OrderAdmin)
 admin.site.register(ProductOrder)

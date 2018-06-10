@@ -1,6 +1,12 @@
+import os
+from wsgiref.util import FileWrapper
+
 # Django
 from django.shortcuts import render
 from django.contrib.gis.geos import Polygon
+
+from django.conf import settings
+from django.http import FileResponse
 
 # local
 from .forms import SearchForm
@@ -9,6 +15,24 @@ from order.cart import Cart
 
 # Create your views here.
 
+
+def get_product(request, product_id):
+    IMAGERY_DIR = os.path.join(settings.BASE_DIR, 'CopernicusExplorer/static/imagery')
+    file_path = os.path.join(IMAGERY_DIR, product_id + '.zip')
+    chunk_size = 8192
+
+    response = FileResponse(
+        FileWrapper(
+            open(file_path, 'rb'),
+            chunk_size
+        ),
+        content_type="application/octet-stream"
+    )
+
+    response['Content-Length'] = os.path.getsize(file_path)
+    response['Content-Disposition'] = "attachment; filename=%s" % product_id + '.zip'
+
+    return response
 
 def search_form(request):
     form = SearchForm()

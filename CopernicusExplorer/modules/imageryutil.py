@@ -3,12 +3,23 @@ import os
 import requests
 import zipfile
 import shutil
-import json
 import numpy
 from osgeo import ogr, osr, gdal
 
-DOWNLOAD_PATH = '/home/tomasz/PycharmProjects/copernicus-django/CopernicusExplorer/CopernicusExplorer/static/imagery/'
-ORDERS_PATH = '/home/tomasz/PycharmProjects/copernicus-django/CopernicusExplorer/CopernicusExplorer/static/orders/'
+# from django.conf import settings
+
+# os.path.join(BASE_DIR, ...)
+
+# BASE_DIR = settings.BASE_DIR
+BASE_DIR = '/home/tomasz/PycharmProjects/copernicus-django/CopernicusExplorer'
+
+# DOWNLOAD_DIR = '/home/tomasz/PycharmProjects/copernicus-django/CopernicusExplorer/CopernicusExplorer/static/imagery/'
+TEMP_DIR = os.path.join(BASE_DIR, 'data/temp')
+
+# ORDERS_DIR = '/home/tomasz/PycharmProjects/copernicus-django/CopernicusExplorer/CopernicusExplorer/static/orders/'
+ORDERS_DIR = os.path.join(BASE_DIR, 'data/orders')
+
+IMAGERY_DIR = os.path.join(BASE_DIR, 'data/imagery')
 
 
 def download_product(id):
@@ -25,24 +36,11 @@ def download_product(id):
 
     r = requests.get(url, auth=(username, password), stream=True)
     if r.status_code == 200:
-        with open(DOWNLOAD_PATH + id + '.zip', 'wb') as f:
+        with open(os.path.join(TEMP_DIR, id + '.zip'), 'wb') as f:
             r.raw.decode_content = True
             shutil.copyfileobj(r.raw, f)
 
     sys.stdout.flush()
-
-
-def is_downloaded(id):
-    """
-    Checks if a product is already downloaded
-    :param str id: Product ID
-    :return bool:
-    """
-
-    if os.path.isfile(DOWNLOAD_PATH + id + '.zip'):
-        return True
-    else:
-        return False
 
 
 def unzip_product(id):
@@ -51,8 +49,8 @@ def unzip_product(id):
     :param str id: Product ID
     """
 
-    zip_ref = zipfile.ZipFile(DOWNLOAD_PATH + id + '.zip', 'r')
-    zip_ref.extractall(DOWNLOAD_PATH + id)  # wypakowanie obrazu do extractPath
+    zip_ref = zipfile.ZipFile(os.path.join(TEMP_DIR, id + '.zip'), 'r')
+    zip_ref.extractall(os.path.join(TEMP_DIR, id))
     zip_ref.close()
 
 
@@ -62,8 +60,8 @@ def zip_order(order_id):
     :param str order_id: Order ID
     """
 
-    folder_path = ORDERS_PATH + order_id + '/'
-    output_path = ORDERS_PATH + order_id + '.zip'
+    folder_path = os.path.join(ORDERS_DIR, str(order_id))
+    output_path = os.path.join(ORDERS_DIR, str(order_id) + '.zip')
 
     parent_folder = os.path.dirname(folder_path)
 
@@ -81,17 +79,17 @@ def zip_order(order_id):
                 absolute_path = os.path.join(root, file_name)
                 relative_path = absolute_path.replace(parent_folder + '/', '')
                 zipFile.write(absolute_path, relative_path)
-
-        print(output_path + ' created succesfully.')
     except IOError:
         sys.exit(1)
     finally:
         zipFile.close()
 
+    shutil.rmtree(folder_path)
 
-def clipImageTiff(extent, source_image_path, output_image_path):
+
+def clip_image_tiff(extent, source_image_path, output_image_path):
     """
-    Clips a GeoTIFF image to defined geographical extent and saves it to a .tiff file
+    Clips a GeoTIFF image to defined bounding box and saves it as a *.tiff file
 
     :param dict extent:
     :param str source_image_path:
@@ -145,10 +143,10 @@ def clipImageTiff(extent, source_image_path, output_image_path):
     pixelWidth = geotransform[1]
     pixelHeight = geotransform[5]
 
-    i1 = int((extent['minX'] - xOrigin) / pixelWidth)
-    j1 = int((extent['minY'] - yOrigin) / pixelHeight)
-    i2 = int((extent['maxX'] - xOrigin) / pixelWidth)
-    j2 = int((extent['maxY'] - yOrigin) / pixelHeight)
+    i1 = int((extent['min_x'] - xOrigin) / pixelWidth)
+    j1 = int((extent['min_y'] - yOrigin) / pixelHeight)
+    i2 = int((extent['max_x'] - xOrigin) / pixelWidth)
+    j2 = int((extent['max_y'] - yOrigin) / pixelHeight)
 
     new_cols = i2 - i1 + 1
     new_rows = j1 - j2 + 1
@@ -190,9 +188,9 @@ def clipImageTiff(extent, source_image_path, output_image_path):
     dataset_middle = None
 
 
-def clipImageJP2(extent, source_image_path, output_image_path):
+def clip_image_jp2(extent, source_image_path, output_image_path):
     """
-    Clips a JPEG2000 image to defined geographical extent and saves it to a .jp2 file
+    Clips a JPEG2000 image to defined bounding box and saves it as a *.jp2 file
 
     :param dict extent:
     :param str source_image_path:
@@ -234,8 +232,8 @@ def clipImageJP2(extent, source_image_path, output_image_path):
 
     transform = osr.CoordinateTransformation(in_srs, out_srs)
 
-    i1j1 = transform.TransformPoint(extent['minX'], extent['minY'])
-    i2j2 = transform.TransformPoint(extent['maxX'], extent['maxY'])
+    i1j1 = transform.TransformPoint(extent['min_x'], extent['min_y'])
+    i2j2 = transform.TransformPoint(extent['max_x'], extent['max_y'])
 
     i1 = int((i1j1[0] - xOrigin) / pixelWidth)
     j1 = int((i1j1[1] - yOrigin) / pixelHeight)
@@ -273,47 +271,63 @@ def clipImageJP2(extent, source_image_path, output_image_path):
         dataset = None
 
 
-def clip_image(token, extent, title, satellite):
-    if not os.path.exists(ORDERS_PATH + token + '\\' + title):
-        os.makedirs(ORDERS_PATH + token + '\\' + title)
+def iterate_product(product, order):
+    """
+    Iterates over downloaded product content and calls the clip function for each imagery file (*.tiff or *.jp2).
 
-    if (satellite[:2] == 'S1'):
-        # printMessage('Clipping image', startTime)
-        for image in os.listdir(DOWNLOAD_PATH + title + '.SAFE\\measurement\\'):
+    :param obj product: django.models Product object
+    :param obj order: django.models Order object
+    """
+
+    # Creates /orders/order_id/product_id directory if it doesn't exist
+
+
+    if (product.satellite[:2] == 'S1'):
+        # If it's a Sentinel-1 product iterates over *.tiff files in the product_title.safe/measurement directory
+        if not os.path.exists(os.path.join(ORDERS_DIR, str(order.pk), product.title)):
+            os.makedirs(os.path.join(ORDERS_DIR, str(order.pk), product.title))
+
+        for image in os.listdir(os.path.join(TEMP_DIR, product.id, product.title + '.SAFE', 'measurement')):
             if image.endswith('.tiff'):
-                sourceImagePath = DOWNLOAD_PATH + title + '.SAFE\\measurement\\' + image
-                outputImagePath = ORDERS_PATH + token + '\\' + title + '\\' + image
-                clipImageTiff(extent, sourceImagePath, outputImagePath)
+                source_image_path = os.path.join(TEMP_DIR, product.id, product.title + '.SAFE', 'measurement', image)
+                output_image_path = os.path.join(ORDERS_DIR, str(order.pk), product.title, image)
 
-    elif (satellite[:2] == 'S2'):
-        # printMessage('Clipping image', startTime)
+                print(source_image_path)
+                print(output_image_path)
+                print(order.extent())
 
-        subfolder = os.listdir(DOWNLOAD_PATH + title + '.SAFE\\GRANULE\\')
-        print(title[4:10])
-        if title[4:10] == 'MSIL2A':
+                clip_image_tiff(order.extent(), source_image_path, output_image_path)
+
+    elif (product.satellite[:2] == 'S2'):
+        subfolder = os.listdir(os.path.join(TEMP_DIR, product.id, product.title + '.SAFE', 'GRANULE'))
+        if product.title[4:10] == 'MSIL2A':
             for sub in subfolder:
 
-                subsubfolder = os.listdir(DOWNLOAD_PATH + title + '.SAFE\\GRANULE\\' + sub + '\\IMG_DATA\\')
-                print(subsubfolder)
+                subsubfolder = os.listdir(os.path.join(TEMP_DIR, product.id, product.title + '.SAFE', 'GRANULE', sub, 'IMG_DATA'))
 
                 for subsub in subsubfolder:
-                    if not os.path.exists(ORDERS_PATH + token + '\\' + title + '\\' + sub + '\\' + subsub):
-                        os.makedirs(ORDERS_PATH + token + '\\' + title + '\\' + sub + '\\' + subsub)
-                        print(ORDERS_PATH + token + '\\' + title + '\\' + sub + '\\' + subsub)
 
-                    for image in os.listdir(
-                            DOWNLOAD_PATH + title + '.SAFE\\GRANULE\\' + sub + '\\IMG_DATA\\' + subsub + '\\'):
+                    # if not os.path.exists(os.path.join(ORDERS_DIR, product.id, product.title, sub, subsub)):
+                    #     os.makedirs(os.path.join(ORDERS_DIR, product.id, product.title, sub, subsub))
+
+                    if not os.path.exists(os.path.join(ORDERS_DIR, str(order.pk), product.title, sub, subsub)):
+                        os.makedirs(os.path.join(ORDERS_DIR, str(order.pk), product.title, sub, subsub))
+
+                    for image in os.listdir(os.path.join(TEMP_DIR, product.id, product.title + '.SAFE', 'GRANULE', sub, 'IMG_DATA', subsub)):
                         if image.endswith('.jp2'):
-                            sourceImagePath = DOWNLOAD_PATH + title + '.SAFE\\GRANULE\\' + sub + '\\IMG_DATA\\' + subsub + '\\' + image
-                            outputImagePath = ORDERS_PATH + token + '\\' + title + '\\' + sub + '\\' + subsub + '\\' + image[
-                                                                                                                      :-4] + '.tiff'
-                            clipImageJP2(extent, sourceImagePath, outputImagePath)
+
+                            # orders/40/S2A_MSIL2A_20180529T101031_N0208_R022_T33UVS_20180529T112942/L2A_T33UVS_A015320_20180529T101225/R20m/T33UVS_20180529T101031_B07_20m/.tiff
+
+                            source_image_path = os.path.join(TEMP_DIR, product.id, product.title + '.SAFE', 'GRANULE', sub, 'IMG_DATA', subsub, image)
+                            output_image_path = os.path.join(ORDERS_DIR, str(order.pk), product.title, sub, subsub, image[:-4])
+                            clip_image_jp2(order.extent(), source_image_path, output_image_path)
         else:
             for sub in subfolder:
-                if not os.path.exists(ORDERS_PATH + token + '\\' + title + '\\' + sub):
-                    os.makedirs(ORDERS_PATH + token + '\\' + title + '\\' + sub)
-                for image in os.listdir(DOWNLOAD_PATH + title + '.SAFE\\GRANULE\\' + sub + '\\IMG_DATA\\'):
+                if not os.path.exists(os.path.join(ORDERS_DIR, str(order.pk), product.title, sub)):
+                    os.makedirs(os.path.join(ORDERS_DIR, str(order.pk), product.title, sub))
+
+                for image in os.listdir(os.path.join(TEMP_DIR, product.id, product.title + '.SAFE', 'GRANULE', sub, 'IMG_DATA')):
                     if image.endswith('.jp2'):
-                        sourceImagePath = DOWNLOAD_PATH + title + '.SAFE\\GRANULE\\' + sub + '\\IMG_DATA\\' + image
-                        outputImagePath = ORDERS_PATH + token + '\\' + title + '\\' + sub + '\\' + image[:-4] + '.tiff'
-                        clipImageJP2(extent, sourceImagePath, outputImagePath)
+                        source_image_path = os.path.join(TEMP_DIR, product.id, product.title + '.SAFE', 'GRANULE', sub, 'IMG_DATA', image)
+                        output_image_path = os.path.join(ORDERS_DIR, str(order.pk), product.title, sub, image[:-4])
+                        clip_image_jp2(order.extent(), source_image_path, output_image_path)
