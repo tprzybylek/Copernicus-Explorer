@@ -2,23 +2,447 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="73ed0941-e0b2-4433-bafb-6c6dc82f4701" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/celery.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/CopernicusExplorer/modules/imageryutil.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/CopernicusExplorer/order/tasks.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/CopernicusExplorer/search/tasks.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/Scripts/Perform-Order.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/Scripts/Rolling-Archive-1.py" />
-      <change beforePath="$PROJECT_DIR$/.idea/copernicus-django.iml" afterPath="$PROJECT_DIR$/.idea/copernicus-django.iml" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/__init__.py" afterPath="$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/__init__.py" />
-      <change beforePath="$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/settings.py" afterPath="$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/settings.py" />
-      <change beforePath="$PROJECT_DIR$/CopernicusExplorer/order/views.py" afterPath="$PROJECT_DIR$/CopernicusExplorer/order/views.py" />
-      <change beforePath="$PROJECT_DIR$/CopernicusExplorer/search/models.py" afterPath="$PROJECT_DIR$/CopernicusExplorer/search/models.py" />
-      <change beforePath="$PROJECT_DIR$/Scripts/Imagery-Update/Imagery-Update.py" afterPath="$PROJECT_DIR$/Scripts/Update-Database/Update-Database.py" />
-      <change beforePath="$PROJECT_DIR$/Scripts/Imagery-Update/log.txt" afterPath="$PROJECT_DIR$/Scripts/Update-Database/log.txt" />
-      <change beforePath="$PROJECT_DIR$/Scripts/Imagery-Update/search.xml" afterPath="$PROJECT_DIR$/Scripts/Update-Database/search.xml" />
-      <change beforePath="$PROJECT_DIR$/Scripts/download_esa_data.py" afterPath="$PROJECT_DIR$/Scripts/Rolling-Archive-2.py" />
+      <change beforePath="$PROJECT_DIR$/CopernicusExplorer/modules/imageryutil.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/Scripts/Perform-Order.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/Scripts/Rolling-Archive-1.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/Scripts/Rolling-Archive-2.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/Scripts/Update-Database/Update-Database.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/Scripts/Update-Database/log.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/Scripts/Update-Database/search.xml" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/bin/activate" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/bin/activate.csh" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/bin/activate.fish" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/bin/activate_this.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/bin/easy_install" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/bin/easy_install-3.5" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/bin/pip" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/bin/pip3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/bin/pip3.5" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/bin/python" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/bin/python-config" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/bin/python3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/bin/python3.5" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/bin/wheel" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/include/python3.5m" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/__future__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/_bootlocale.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/_collections_abc.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/_dummy_thread.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/_weakrefset.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/abc.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/base64.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/bisect.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/codecs.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/collections" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/config-3.5m-x86_64-linux-gnu" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/copy.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/copyreg.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/distutils/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/distutils/distutils.cfg" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/encodings" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/fnmatch.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/functools.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/genericpath.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/hashlib.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/heapq.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/hmac.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/imp.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/importlib" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/io.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/keyword.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/lib-dynload" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/linecache.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/locale.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/no-global-site-packages.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/ntpath.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/operator.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/orig-prefix.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/os.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/plat-x86_64-linux-gnu" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/posixpath.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/random.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/re.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/reprlib.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/rlcompleter.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/shutil.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/easy_install.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip-9.0.1.dist-info/DESCRIPTION.rst" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip-9.0.1.dist-info/INSTALLER" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip-9.0.1.dist-info/METADATA" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip-9.0.1.dist-info/RECORD" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip-9.0.1.dist-info/WHEEL" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip-9.0.1.dist-info/entry_points.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip-9.0.1.dist-info/metadata.json" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip-9.0.1.dist-info/top_level.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/__main__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/appdirs.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/cachecontrol/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/cachecontrol/_cmd.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/cachecontrol/adapter.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/cachecontrol/cache.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/cachecontrol/caches/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/cachecontrol/caches/file_cache.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/cachecontrol/caches/redis_cache.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/cachecontrol/compat.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/cachecontrol/controller.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/cachecontrol/filewrapper.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/cachecontrol/heuristics.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/cachecontrol/serialize.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/cachecontrol/wrapper.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/colorama/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/colorama/ansi.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/colorama/ansitowin32.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/colorama/initialise.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/colorama/win32.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/colorama/winterm.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/distlib/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/distlib/_backport/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/distlib/_backport/misc.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/distlib/_backport/shutil.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/distlib/_backport/sysconfig.cfg" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/distlib/_backport/sysconfig.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/distlib/_backport/tarfile.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/distlib/compat.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/distlib/database.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/distlib/index.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/distlib/locators.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/distlib/manifest.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/distlib/markers.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/distlib/metadata.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/distlib/resources.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/distlib/scripts.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/distlib/t32.exe" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/distlib/t64.exe" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/distlib/util.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/distlib/version.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/distlib/w32.exe" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/distlib/w64.exe" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/distlib/wheel.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/distro.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/_ihatexml.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/_inputstream.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/_tokenizer.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/_trie/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/_trie/_base.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/_trie/datrie.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/_trie/py.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/_utils.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/constants.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/filters/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/filters/alphabeticalattributes.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/filters/base.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/filters/inject_meta_charset.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/filters/lint.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/filters/optionaltags.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/filters/sanitizer.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/filters/whitespace.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/html5parser.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/serializer.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/treeadapters/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/treeadapters/genshi.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/treeadapters/sax.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/treebuilders/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/treebuilders/base.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/treebuilders/dom.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/treebuilders/etree.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/treebuilders/etree_lxml.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/treewalkers/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/treewalkers/base.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/treewalkers/dom.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/treewalkers/etree.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/treewalkers/etree_lxml.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/html5lib/treewalkers/genshi.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/ipaddress.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/lockfile/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/lockfile/linklockfile.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/lockfile/mkdirlockfile.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/lockfile/pidlockfile.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/lockfile/sqlitelockfile.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/lockfile/symlinklockfile.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/ordereddict.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/packaging/__about__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/packaging/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/packaging/_compat.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/packaging/_structures.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/packaging/markers.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/packaging/requirements.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/packaging/specifiers.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/packaging/utils.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/packaging/version.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/pkg_resources/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/progress/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/progress/bar.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/progress/counter.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/progress/helpers.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/progress/spinner.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/pyparsing.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/re-vendor.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/adapters.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/api.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/auth.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/cacert.pem" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/certs.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/compat.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/cookies.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/exceptions.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/hooks.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/models.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/big5freq.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/big5prober.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/chardetect.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/chardistribution.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/charsetgroupprober.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/charsetprober.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/codingstatemachine.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/compat.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/constants.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/cp949prober.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/escprober.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/escsm.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/eucjpprober.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/euckrfreq.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/euckrprober.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/euctwfreq.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/euctwprober.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/gb2312freq.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/gb2312prober.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/hebrewprober.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/jisfreq.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/jpcntx.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/langbulgarianmodel.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/langcyrillicmodel.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/langgreekmodel.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/langhebrewmodel.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/langhungarianmodel.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/langthaimodel.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/latin1prober.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/mbcharsetprober.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/mbcsgroupprober.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/mbcssm.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/sbcharsetprober.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/sbcsgroupprober.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/sjisprober.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/universaldetector.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/chardet/utf8prober.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/_collections.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/connection.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/connectionpool.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/contrib/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/contrib/appengine.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/contrib/ntlmpool.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/contrib/pyopenssl.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/contrib/socks.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/exceptions.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/fields.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/filepost.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/packages/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/packages/ordered_dict.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/packages/six.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/packages/ssl_match_hostname/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/packages/ssl_match_hostname/_implementation.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/poolmanager.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/request.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/response.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/util/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/util/connection.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/util/request.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/util/response.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/util/retry.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/util/ssl_.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/util/timeout.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/packages/urllib3/util/url.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/sessions.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/status_codes.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/structures.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/requests/utils.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/retrying.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/six.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/webencodings/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/webencodings/labels.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/webencodings/mklabels.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/webencodings/tests.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/_vendor/webencodings/x_user_defined.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/basecommand.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/baseparser.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/cmdoptions.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/commands/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/commands/check.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/commands/completion.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/commands/download.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/commands/freeze.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/commands/hash.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/commands/help.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/commands/install.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/commands/list.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/commands/search.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/commands/show.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/commands/uninstall.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/commands/wheel.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/compat/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/compat/dictconfig.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/download.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/exceptions.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/index.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/locations.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/models/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/models/index.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/operations/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/operations/check.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/operations/freeze.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/pep425tags.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/req/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/req/req_file.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/req/req_install.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/req/req_set.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/req/req_uninstall.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/status_codes.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/utils/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/utils/appdirs.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/utils/build.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/utils/deprecation.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/utils/encoding.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/utils/filesystem.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/utils/glibc.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/utils/hashes.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/utils/logging.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/utils/outdated.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/utils/packaging.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/utils/setuptools_build.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/utils/ui.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/vcs/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/vcs/bazaar.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/vcs/git.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/vcs/mercurial.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/vcs/subversion.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pip/wheel.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pkg_resources/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pkg_resources/_vendor/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pkg_resources/_vendor/appdirs.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pkg_resources/_vendor/packaging/__about__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pkg_resources/_vendor/packaging/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pkg_resources/_vendor/packaging/_compat.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pkg_resources/_vendor/packaging/_structures.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pkg_resources/_vendor/packaging/markers.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pkg_resources/_vendor/packaging/requirements.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pkg_resources/_vendor/packaging/specifiers.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pkg_resources/_vendor/packaging/utils.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pkg_resources/_vendor/packaging/version.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pkg_resources/_vendor/pyparsing.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pkg_resources/_vendor/six.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pkg_resources/extern/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/pkg_resources/py31compat.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/archive_util.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/build_meta.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/cli-32.exe" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/cli-64.exe" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/cli.exe" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/alias.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/bdist_egg.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/bdist_rpm.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/bdist_wininst.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/build_clib.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/build_ext.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/build_py.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/develop.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/dist_info.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/easy_install.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/egg_info.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/install.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/install_egg_info.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/install_lib.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/install_scripts.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/launcher manifest.xml" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/py36compat.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/register.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/rotate.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/saveopts.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/sdist.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/setopt.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/test.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/upload.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/command/upload_docs.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/config.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/dep_util.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/depends.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/dist.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/extension.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/extern/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/glibc.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/glob.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/gui-32.exe" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/gui-64.exe" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/gui.exe" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/launch.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/lib2to3_ex.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/monkey.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/msvc.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/namespaces.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/package_index.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/pep425tags.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/py27compat.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/py31compat.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/py33compat.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/py36compat.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/sandbox.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/script (dev).tmpl" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/script.tmpl" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/site-patch.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/ssl_support.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/unicode_utils.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/version.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/wheel.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/setuptools/windows_support.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel-0.30.0.dist-info/DESCRIPTION.rst" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel-0.30.0.dist-info/INSTALLER" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel-0.30.0.dist-info/LICENSE.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel-0.30.0.dist-info/METADATA" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel-0.30.0.dist-info/RECORD" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel-0.30.0.dist-info/WHEEL" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel-0.30.0.dist-info/entry_points.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel-0.30.0.dist-info/metadata.json" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel-0.30.0.dist-info/top_level.txt" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel/__main__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel/archive.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel/bdist_wheel.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel/decorator.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel/egg2wheel.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel/install.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel/metadata.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel/paths.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel/pep425tags.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel/pkginfo.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel/signatures/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel/signatures/djbec.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel/signatures/ed25519py.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel/signatures/keys.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel/tool/__init__.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel/util.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site-packages/wheel/wininst2wheel.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/site.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/sre_compile.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/sre_constants.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/sre_parse.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/stat.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/struct.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/tarfile.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/tempfile.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/token.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/tokenize.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/types.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/warnings.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/lib/python3.5/weakref.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/venv/pip-selfcheck.json" afterPath="" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -29,96 +453,13 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="settings.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="settings.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="522">
-              <caret line="163" column="23" lean-forward="false" selection-start-line="163" selection-start-column="23" selection-end-line="163" selection-end-column="23" />
+            <state relative-caret-position="392">
+              <caret line="152" column="23" lean-forward="false" selection-start-line="152" selection-start-column="23" selection-end-line="152" selection-end-column="23" />
               <folding>
                 <element signature="e#319#328#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CopernicusExplorer/order/views.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1386">
-              <caret line="110" column="0" lean-forward="false" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
-              <folding>
-                <element signature="e#9#63#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CopernicusExplorer/search/models.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="414">
-              <caret line="23" column="0" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CopernicusExplorer/order/models.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="468">
-              <caret line="28" column="0" lean-forward="false" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tasks.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/CopernicusExplorer/order/tasks.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="684">
-              <caret line="38" column="29" lean-forward="false" selection-start-line="38" selection-start-column="29" selection-end-line="38" selection-end-column="29" />
-              <folding>
-                <element signature="e#0#56#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="test.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Scripts/test.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="92" />
-              <folding>
-                <element signature="e#0#10#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="imageryutil.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CopernicusExplorer/modules/imageryutil.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="36">
-              <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
-              <folding>
-                <element signature="e#392#956#0" expanded="false" />
-                <element signature="e#986#1195#0" expanded="false" />
-                <element signature="e#1225#1476#0" expanded="false" />
-                <element signature="e#1508#2545#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Perform-Order.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Scripts/Perform-Order.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="243">
-              <caret line="321" column="37" lean-forward="false" selection-start-line="318" selection-start-column="8" selection-end-line="322" selection-end-column="39" />
-              <folding>
-                <element signature="e#0#9#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -136,18 +477,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>coord</find>
-      <find>POLYGON</find>
-      <find>WKT_to_GeoJSON</find>
-      <find>apps</find>
-      <find>getXML</find>
-      <find>entry</find>
-      <find>debug</find>
-      <find>static</find>
-      <find>polygon</find>
-      <find>width</find>
-      <find>interact</find>
-      <find>path</find>
       <find>opacity</find>
       <find>38f</find>
       <find>Prod</find>
@@ -159,6 +488,25 @@
       <find>print</find>
       <find>last_product_time</find>
       <find>isdow</find>
+      <find>extractPath</find>
+      <find>ordersPath</find>
+      <find>token</find>
+      <find>title</find>
+      <find>psycopg2</find>
+      <find>tif</find>
+      <find>output</find>
+      <find>-1</find>
+      <find>extent</find>
+      <find>sourceMaxRasterX</find>
+      <find>sourceMinRasterX</find>
+      <find>srcArray</find>
+      <find>dataset</find>
+      <find>FINAL_IMAGE_PATH</find>
+      <find>import imageryutil</find>
+      <find>passw</find>
+      <find>passwords.json</find>
+      <find>imageryutil</find>
+      <find>static</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -173,8 +521,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Scripts/Imagery-Update/search.xml" />
-        <option value="$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/templates/CopernicusExplorer/layout.html" />
         <option value="$PROJECT_DIR$/CopernicusExplorer/search/templates/search/search.html" />
         <option value="$PROJECT_DIR$/CopernicusExplorer/order/templates/urls.py" />
         <option value="$PROJECT_DIR$/passwords_placeholder.json" />
@@ -191,46 +537,49 @@
         <option value="$PROJECT_DIR$/CopernicusExplorer/static/css/style.css" />
         <option value="$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/static/js/search-form-map.js" />
         <option value="$PROJECT_DIR$/CopernicusExplorer/order/form.py" />
-        <option value="$PROJECT_DIR$/CopernicusExplorer/order/admin.py" />
         <option value="$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/templates/layout.html" />
-        <option value="$PROJECT_DIR$/CopernicusExplorer/order/templates/order/confirm.html" />
         <option value="$PROJECT_DIR$/CopernicusExplorer/search/templates/search/form.html" />
         <option value="$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/static/css/style.css" />
         <option value="$PROJECT_DIR$/CopernicusExplorer/order/templates/order/cart.html" />
         <option value="$PROJECT_DIR$/CopernicusExplorer/search/templates/search/results.html" />
         <option value="$PROJECT_DIR$/CopernicusExplorer/order/cart.py" />
         <option value="$PROJECT_DIR$/CopernicusExplorer/order/forms.py" />
-        <option value="$PROJECT_DIR$/CopernicusExplorer/order/urls.py" />
-        <option value="$PROJECT_DIR$/CopernicusExplorer/search/admin.py" />
         <option value="$PROJECT_DIR$/CopernicusExplorer/search/forms.py" />
-        <option value="$PROJECT_DIR$/CopernicusExplorer/search/urls.py" />
-        <option value="$PROJECT_DIR$/CopernicusExplorer/search/views.py" />
         <option value="$PROJECT_DIR$/Scripts/download_esa_data.py" />
         <option value="$PROJECT_DIR$/Scripts/Download-Imagery-1.py" />
-        <option value="$PROJECT_DIR$/CopernicusExplorer/order/models.py" />
         <option value="$PROJECT_DIR$/Scripts/Perform-Order.py" />
-        <option value="$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/__init__.py" />
         <option value="$PROJECT_DIR$/Scripts/Update-Database/Update-Database.py" />
-        <option value="$PROJECT_DIR$/Scripts/Update-Database/log.txt" />
-        <option value="$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/celery.py" />
-        <option value="$PROJECT_DIR$/CopernicusExplorer/search/models.py" />
         <option value="$PROJECT_DIR$/Scripts/log.txt" />
-        <option value="$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/settings.py" />
+        <option value="$PROJECT_DIR$/Scripts/Rolling-Archive-1.py" />
+        <option value="$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/celery.py" />
+        <option value="$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/__init__.py" />
+        <option value="$PROJECT_DIR$/Scripts/test.py" />
+        <option value="$PROJECT_DIR$/CopernicusExplorer/search/admin.py" />
+        <option value="$PROJECT_DIR$/CopernicusExplorer/order/admin.py" />
+        <option value="$PROJECT_DIR$/CopernicusExplorer/order/models.py" />
+        <option value="$PROJECT_DIR$/CopernicusExplorer/search/models.py" />
+        <option value="$PROJECT_DIR$/Scripts/Update-Database/log.txt" />
+        <option value="$PROJECT_DIR$/CopernicusExplorer/search/urls.py" />
+        <option value="$PROJECT_DIR$/CopernicusExplorer/search/views.py" />
+        <option value="$PROJECT_DIR$/CopernicusExplorer/order/urls.py" />
+        <option value="$PROJECT_DIR$/CopernicusExplorer/order/templates/order/confirm.html" />
+        <option value="$PROJECT_DIR$/CopernicusExplorer/order/templates/order/detail.html" />
         <option value="$PROJECT_DIR$/CopernicusExplorer/order/views.py" />
         <option value="$PROJECT_DIR$/CopernicusExplorer/search/update_database.log" />
-        <option value="$PROJECT_DIR$/CopernicusExplorer/search/tasks.py" />
         <option value="$PROJECT_DIR$/CopernicusExplorer/modules/imageryutil.py" />
-        <option value="$PROJECT_DIR$/Scripts/test.py" />
+        <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_1.py" />
+        <option value="$PROJECT_DIR$/CopernicusExplorer/order/test.py" />
         <option value="$PROJECT_DIR$/CopernicusExplorer/order/tasks.py" />
-        <option value="$PROJECT_DIR$/Scripts/Rolling-Archive-1.py" />
+        <option value="$PROJECT_DIR$/CopernicusExplorer/search/tasks.py" />
+        <option value="$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/settings.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="799" />
-    <option name="y" value="89" />
+    <option name="x" value="641" />
+    <option name="y" value="-4" />
     <option name="width" value="974" />
-    <option name="height" value="972" />
+    <option name="height" value="958" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -268,6 +617,7 @@
     </navigator>
     <panes>
       <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -283,19 +633,20 @@
             <path>
               <item name="copernicus-django" type="b2602c69:ProjectViewProjectNode" />
               <item name="copernicus-django" type="462c0819:PsiDirectoryNode" />
-              <item name="Scripts" type="462c0819:PsiDirectoryNode" />
+              <item name="CopernicusExplorer" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/CopernicusExplorer/modules" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/CopernicusExplorer/search/tasks.py" />
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="com.intellij.ide.scratch.LRUPopupBuilder$2/Languages" value="Python" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -307,18 +658,18 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/CopernicusExplorer/order/templates/order" />
       <recent name="$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/static/js" />
       <recent name="$PROJECT_DIR$/CopernicusExplorer/static/js" />
       <recent name="$PROJECT_DIR$/Scripts" />
-      <recent name="$PROJECT_DIR$/CopernicusExplorer/order/templates/order" />
       <recent name="$PROJECT_DIR$/CopernicusExplorer/search/templates/search" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/CopernicusExplorer/static/js" />
-      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/CopernicusExplorer/data/orders" />
+      <recent name="$PROJECT_DIR$/CopernicusExplorer" />
+      <recent name="$PROJECT_DIR$/CopernicusExplorer/data/shp" />
+      <recent name="$PROJECT_DIR$/CopernicusExplorer/data/temp" />
       <recent name="$PROJECT_DIR$/CopernicusExplorer/order" />
-      <recent name="$PROJECT_DIR$/CopernicusExplorer/cart" />
-      <recent name="$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/templates" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -333,7 +684,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.CopernicusExplorer">
+  <component name="RunManager" selected="Python.Test">
     <configuration name="CopernicusExplorer" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -359,20 +710,58 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="/usr/bin/python3.5" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Scripts" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/CopernicusExplorer/order" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="copernicus-django" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Scripts/test.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/CopernicusExplorer/order/test.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
     </configuration>
-    <list size="2">
+    <configuration name="order_tasks" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/bin/python3.5" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/CopernicusExplorer/modules" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="copernicus-django" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/CopernicusExplorer/modules/imageryutil.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <configuration name="search_tasks" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/bin/python3.5" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/CopernicusExplorer/search" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="copernicus-django" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/CopernicusExplorer/search/tasks.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <list size="4">
       <item index="0" class="java.lang.String" itemvalue="Python.CopernicusExplorer" />
-      <item index="1" class="java.lang.String" itemvalue="Python.Test" />
+      <item index="1" class="java.lang.String" itemvalue="Python.order_tasks" />
+      <item index="2" class="java.lang.String" itemvalue="Python.search_tasks" />
+      <item index="3" class="java.lang.String" itemvalue="Python.Test" />
     </list>
   </component>
   <component name="ShelveChangesManager" show_recycled="false">
@@ -515,7 +904,56 @@
       <option name="project" value="LOCAL" />
       <updated>1524734685835</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Many to many relation as a single model field (models.ManyToManyField)">
+      <created>1528453840954</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1528453840954</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Add clip_image_tiff">
+      <created>1528641740845</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1528641740845</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Add clip_image_tiff">
+      <created>1528641792110</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1528641792110</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Add clip_image_jp2">
+      <created>1528659813357</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1528659813357</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Change file paths to relative&#10;Read password from file">
+      <created>1528708462369</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1528708462370</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Change password.json file location&#10;Change static files directory">
+      <created>1528708687436</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1528708687436</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Moved file to different directory">
+      <created>1528708749202</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1528708749202</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TodoView">
@@ -528,24 +966,24 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="799" y="89" width="1682" height="1015" extended-state="6" />
+    <frame x="641" y="-4" width="1682" height="1015" extended-state="6" />
     <layout>
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15297619" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32911393" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27413985" sideWeight="0.50535715" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32852387" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21087681" sideWeight="0.49464285" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27413985" sideWeight="0.49464285" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24984616" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26526082" sideWeight="0.49661538" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26859045" sideWeight="0.49661538" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32852387" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
@@ -575,7 +1013,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="configure PostGIS DB, create models" />
     <MESSAGE value="create order app" />
     <MESSAGE value="Correct code style (PEP8)" />
@@ -591,7 +1028,13 @@
     <MESSAGE value="Add add, remove and show_all views" />
     <MESSAGE value="Add GUI, order" />
     <MESSAGE value="PEP8" />
-    <option name="LAST_COMMIT_MESSAGE" value="PEP8" />
+    <MESSAGE value="Many to many relation as a single model field (models.ManyToManyField)" />
+    <MESSAGE value="Add clip_image_tiff" />
+    <MESSAGE value="Add clip_image_jp2" />
+    <MESSAGE value="Change file paths to relative&#10;Read password from file" />
+    <MESSAGE value="Change password.json file location&#10;Change static files directory" />
+    <MESSAGE value="Moved file to different directory" />
+    <option name="LAST_COMMIT_MESSAGE" value="Moved file to different directory" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -608,7 +1051,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="71" />
+      <option name="time" value="116" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -622,49 +1065,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/static/js/search-form-map2.js" />
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/static/js/search-form-map.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/static/js/search-results-map.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="9" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/static/css/style.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="12" column="1" lean-forward="true" selection-start-line="12" selection-start-column="1" selection-end-line="12" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/static/js/search-form-map.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="72" column="51" lean-forward="true" selection-start-line="69" selection-start-column="29" selection-end-line="72" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/order/templates/order/confirm.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="54">
-          <caret line="3" column="21" lean-forward="false" selection-start-line="3" selection-start-column="21" selection-end-line="3" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/static/js/leaflet.draw/leaflet.draw.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-4947">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/static/js/leaflet/leaflet.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="211">
@@ -676,13 +1076,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-31">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/order/templates/order/cart.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1926">
-          <caret line="107" column="23" lean-forward="true" selection-start-line="107" selection-start-column="23" selection-end-line="107" selection-end-column="23" />
         </state>
       </provider>
     </entry>
@@ -721,31 +1114,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/order/admin.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="5" column="0" lean-forward="true" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/CopernicusExplorer/order/apps.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/order/tests.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/order/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -763,13 +1135,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/search/admin.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="72">
-          <caret line="4" column="0" lean-forward="true" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/CopernicusExplorer/search/apps.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
@@ -784,38 +1149,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/search/tests.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/search/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/CopernicusExplorer/search/templates/search/results.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="735">
           <caret line="82" column="123" lean-forward="false" selection-start-line="82" selection-start-column="123" selection-end-line="82" selection-end-column="123" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/search/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="72">
-          <caret line="4" column="2" lean-forward="false" selection-start-line="4" selection-start-column="2" selection-end-line="4" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/manage.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="72">
-          <caret line="5" column="73" lean-forward="true" selection-start-line="5" selection-start-column="4" selection-end-line="5" selection-end-column="82" />
         </state>
       </provider>
     </entry>
@@ -826,13 +1163,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/celerybeat-schedule">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="2" column="11" lean-forward="false" selection-start-line="2" selection-start-column="11" selection-end-line="2" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Scripts/Update-Database/search.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="353">
@@ -840,27 +1170,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/celery.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/CopernicusExplorer/log.txt" />
-    <entry file="file://$PROJECT_DIR$/Scripts/log.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18">
-          <caret line="1" column="0" lean-forward="false" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/Scripts/log.txt" />
     <entry file="file://$PROJECT_DIR$/CopernicusExplorer/search/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -868,83 +1183,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#56#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Scripts/Update-Database/log.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18">
-          <caret line="1" column="30" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/search/tasks.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="43" column="110" lean-forward="false" selection-start-line="43" selection-start-column="110" selection-end-line="43" selection-end-column="110" />
-          <folding>
-            <element signature="e#303#606#0" expanded="false" />
-            <element signature="e#1993#2204#0" expanded="false" />
-            <element signature="e#2245#5295#0" expanded="false" />
-            <element signature="e#5328#7015#0" expanded="false" />
-            <element signature="e#7162#9126#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="522">
-          <caret line="163" column="23" lean-forward="false" selection-start-line="163" selection-start-column="23" selection-end-line="163" selection-end-column="23" />
-          <folding>
-            <element signature="e#319#328#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/search/update_database.log">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="30" column="0" lean-forward="true" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/order/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1386">
-          <caret line="110" column="0" lean-forward="false" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
-          <folding>
-            <element signature="e#9#63#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/order/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="468">
-          <caret line="28" column="0" lean-forward="false" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/search/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="414">
-          <caret line="23" column="0" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -952,59 +1190,239 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
           <caret line="11" column="11" lean-forward="true" selection-start-line="11" selection-start-column="11" selection-end-line="11" selection-end-column="11" />
-          <folding>
-            <element signature="e#0#9#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/modules/imageryutil.py">
+    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/celerybeat-schedule">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1075">
+          <caret line="2" column="11" lean-forward="false" selection-start-line="2" selection-start-column="11" selection-end-line="2" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="3" column="8" lean-forward="false" selection-start-line="3" selection-start-column="8" selection-end-line="3" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/static/orders/30/S1B_IW_GRDH_1SDV_20180501T050822_20180501T050847_010723_01395E_0577/s1b-iw-grd-vv-20180501t050822-20180501t050847-010723-01395e-001.tiff" />
+    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/manage.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="5" column="73" lean-forward="true" selection-start-line="5" selection-start-column="4" selection-end-line="5" selection-end-column="82" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/search/admin.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="5" column="0" lean-forward="true" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/order/admin.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="10" column="37" lean-forward="false" selection-start-line="10" selection-start-column="37" selection-end-line="10" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/celery.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="36">
-          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
-          <folding>
-            <element signature="e#392#956#0" expanded="false" />
-            <element signature="e#986#1195#0" expanded="false" />
-            <element signature="e#1225#1476#0" expanded="false" />
-            <element signature="e#1508#2545#0" expanded="false" />
-          </folding>
+          <caret line="2" column="5" lean-forward="false" selection-start-line="2" selection-start-column="5" selection-end-line="2" selection-end-column="5" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Scripts/Perform-Order.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="243">
-          <caret line="321" column="37" lean-forward="false" selection-start-line="318" selection-start-column="8" selection-end-line="322" selection-end-column="39" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="959">
+          <caret line="281" column="79" lean-forward="false" selection-start-line="281" selection-start-column="79" selection-end-line="281" selection-end-column="79" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Scripts/test.py">
+    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/order/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="92" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="540">
+          <caret line="36" column="9" lean-forward="false" selection-start-line="36" selection-start-column="9" selection-end-line="36" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/order/tests.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/search/tests.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Scripts/Update-Database/log.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="558">
+          <caret line="35" column="0" lean-forward="false" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/search/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="87" lean-forward="true" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="87" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/search/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="7" column="28" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/order/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="11" column="76" lean-forward="false" selection-start-line="11" selection-start-column="61" selection-end-line="11" selection-end-column="76" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/order/templates/order/cart.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="426">
+          <caret line="107" column="23" lean-forward="true" selection-start-line="107" selection-start-column="23" selection-end-line="107" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/order/templates/order/confirm.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="12" column="51" lean-forward="false" selection-start-line="12" selection-start-column="51" selection-end-line="12" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/order/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="455">
+          <caret line="146" column="78" lean-forward="false" selection-start-line="146" selection-start-column="70" selection-end-line="146" selection-end-column="78" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/order/templates/order/detail.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="16" column="80" lean-forward="false" selection-start-line="16" selection-start-column="80" selection-end-line="16" selection-end-column="80" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/search/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="414">
+          <caret line="23" column="0" lean-forward="true" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/search/update_database.log">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="36">
+          <caret line="2" column="0" lean-forward="true" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Scripts/Rolling-Archive-1.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1230">
-          <caret line="64" column="17" lean-forward="true" selection-start-line="64" selection-start-column="17" selection-end-line="64" selection-end-column="17" />
+        <state relative-caret-position="-3969">
+          <caret line="16" column="1" lean-forward="true" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/data/temp/S1B_IW_GRDH_1SDV_20180606T050823_20180606T050848_011248_014A48_1751/s1b-iw-grd-vv-20180606t050823-20180606t050848-011248-014a48-001_WGS84.tiff" />
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_1.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="127" column="20" lean-forward="false" selection-start-line="127" selection-start-column="20" selection-end-line="127" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/order/test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="410">
+          <caret line="38" column="25" lean-forward="false" selection-start-line="38" selection-start-column="25" selection-end-line="38" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/passwords.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/modules/imageryutil.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="504">
+          <caret line="54" column="0" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/CopernicusExplorer/order/tasks.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="684">
-          <caret line="38" column="29" lean-forward="false" selection-start-line="38" selection-start-column="29" selection-end-line="38" selection-end-column="29" />
+        <state relative-caret-position="612">
+          <caret line="34" column="4" lean-forward="false" selection-start-line="34" selection-start-column="4" selection-end-line="37" selection-end-column="46" />
           <folding>
-            <element signature="e#0#56#0" expanded="true" />
+            <element signature="e#0#56#0" expanded="false" />
+            <element signature="e#3452#3511#0" expanded="false" />
+            <element signature="e#4245#4370#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/search/tasks.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="810">
+          <caret line="218" column="46" lean-forward="false" selection-start-line="218" selection-start-column="46" selection-end-line="218" selection-end-column="46" />
+          <folding>
+            <element signature="e#0#56#0" expanded="false" />
+            <element signature="e#790#8957#0" expanded="false" />
+            <element signature="e#9661#9891#0" expanded="false" />
+            <element signature="e#9973#15678#0" expanded="false" />
+            <element signature="e#10002#10212#0" expanded="false" />
+            <element signature="e#10247#10476#0" expanded="false" />
+            <element signature="e#10524#10936#0" expanded="false" />
+            <element signature="e#10981#11277#0" expanded="false" />
+            <element signature="e#11321#11446#0" expanded="false" />
+            <element signature="e#15748#20635#0" expanded="false" />
+            <element signature="e#15777#15987#0" expanded="false" />
+            <element signature="e#16022#16251#0" expanded="false" />
+            <element signature="e#16299#16711#0" expanded="false" />
+            <element signature="e#16756#17052#0" expanded="false" />
+            <element signature="e#20669#21692#0" expanded="false" />
+            <element signature="e#21741#21969#1" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="392">
+          <caret line="152" column="23" lean-forward="false" selection-start-line="152" selection-start-column="23" selection-end-line="152" selection-end-column="23" />
+          <folding>
+            <element signature="e#319#328#0" expanded="true" />
           </folding>
         </state>
       </provider>
