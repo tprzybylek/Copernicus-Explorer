@@ -14,11 +14,10 @@ import os
 import json
 from celery.schedules import crontab
 
-
-passwords = json.load(open('/home/tomasz/PycharmProjects/copernicus-django/passwords.json'))
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+passwords = json.load(open(os.path.join(BASE_DIR, 'passwords.json')))
 
 
 # Quick-start development settings - unsuitable for production
@@ -149,7 +148,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_ROOT = os.path.join(BASE_DIR, "CopernicusExplorer/static")
 
 STATIC_URL = '/static/'
 
@@ -173,10 +172,10 @@ CELERY_TIMEZONE = 'CET'
 CELERY_IMPORTS = ['search.tasks', 'order.tasks']
 
 CELERY_BEAT_SCHEDULE = {
-    #'update_database': {
-    #    'task': 'search.tasks.update_database',
-    #    'schedule': crontab(minute='*/5'),
-    #},
+    'update_database': {
+        'task': 'search.tasks.update_database',
+        'schedule': crontab(minute='*/5'),
+    },
     'rolling_archive': {
         'task': 'search.tasks.rolling_archive',
         'schedule': crontab(minute='*/5'),
