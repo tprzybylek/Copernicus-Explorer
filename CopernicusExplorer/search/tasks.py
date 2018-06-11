@@ -6,7 +6,6 @@ import sys
 import shutil
 import zipfile
 
-
 from django.utils import timezone
 from django.conf import settings
 
@@ -21,11 +20,8 @@ import numpy as np
 
 from osgeo import gdal, gdalnumeric, ogr, osr
 from PIL import Image, ImageDraw
-
 from django.contrib.gis.geos import GEOSGeometry
 from .models import Product
-
-import imageryutil
 
 BASE_DIR = settings.BASE_DIR
 TEMP_DIR = os.path.join(BASE_DIR, 'data/temp')
@@ -36,8 +32,7 @@ SHP_PATH = os.path.join(BASE_DIR, 'data/shp/PL.shp')
 @shared_task
 def update_database():
     def get_xml(url):
-        passwords = json.load(open('/home/tomasz/PycharmProjects/copernicus-django/'
-                                   'passwords.json'))
+        passwords = json.load(open(os.path.join(BASE_DIR, 'passwords.json')))
 
         r = requests.get(url, auth=(passwords['scihub']['user'], passwords['scihub']['password']))
         e = xml.etree.ElementTree.fromstring(r.content)
@@ -209,6 +204,37 @@ def update_database():
         last_update = get_last_update()
     else:
         print("DB update complete")
+
+def download_product(id):
+    """
+    Downloads a Sentinel product from ESA archive and writes it to the hard drive
+    :param str id: Product ID
+    """
+
+    url = "https://scihub.copernicus.eu/dhus/odata/v1/Products('" + id + "')/$value"
+
+    passwords = json.load(open(os.path.join(BASE_DIR, 'passwords.json')))
+
+    username = passwords['scihub']['user']
+    password = passwords['scihub']['password']
+
+    r = requests.get(url, auth=(username, password), stream=True)
+    if r.status_code == 200:
+        with open(os.path.join(TEMP_DIR, id + '.zip'), 'wb') as f:
+            r.raw.decode_content = True
+            shutil.copyfileobj(r.raw, f)
+
+    sys.stdout.flush()
+
+def unzip_product(id):
+    """
+    Unzips the product to /DOWNLOAD_PATH/id/
+    :param str id: Product ID
+    """
+
+    zip_ref = zipfile.ZipFile(os.path.join(TEMP_DIR, id + '.zip'), 'r')
+    zip_ref.extractall(os.path.join(TEMP_DIR, id))
+    zip_ref.close()
 
 def clip_image_tiff(id, title, filename, sourceImagePath, outputImagePath):
     def imageToArray(i):
@@ -647,8 +673,8 @@ def rolling_archive():
     print(fresh_products)
 
     for product in fresh_products:
-        imageryutil.download_product(product.id)
-        imageryutil.unzip_product(product.id)
+        download_product(product.id)
+        unzip_product(product.id)
 
         shutil.rmtree(os.path.join(TEMP_DIR, product.id + '.zip'))
 
