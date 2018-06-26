@@ -2,17 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="73ed0941-e0b2-4433-bafb-6c6dc82f4701" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/CopernicusExplorer/data/shp/PL.cpg" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/CopernicusExplorer/data/shp/PL.dbf" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/CopernicusExplorer/data/shp/PL.prj" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/CopernicusExplorer/data/shp/PL.qpj" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/CopernicusExplorer/data/shp/PL.shp" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/CopernicusExplorer/data/shp/PL.shx" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" afterPath="" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/static/css/style.css" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/static/js/cart-map.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/static/js/search-form-map.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/CopernicusExplorer/CopernicusExplorer/static/js/search-results-map.js" afterPath="" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -58,8 +49,8 @@
       <file leaf-file-name="requirements.txt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/requirements.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="36">
-              <caret line="2" column="26" lean-forward="false" selection-start-line="2" selection-start-column="26" selection-end-line="2" selection-end-column="26" />
+            <state relative-caret-position="126">
+              <caret line="7" column="10" lean-forward="false" selection-start-line="7" selection-start-column="10" selection-end-line="7" selection-end-column="10" />
               <folding />
             </state>
           </provider>
@@ -222,17 +213,6 @@
             <path>
               <item name="copernicus-django" type="b2602c69:ProjectViewProjectNode" />
               <item name="copernicus-django" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="copernicus-django" type="b2602c69:ProjectViewProjectNode" />
-              <item name="copernicus-django" type="462c0819:PsiDirectoryNode" />
-              <item name="CopernicusExplorer" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="copernicus-django" type="b2602c69:ProjectViewProjectNode" />
-              <item name="copernicus-django" type="462c0819:PsiDirectoryNode" />
-              <item name="CopernicusExplorer" type="462c0819:PsiDirectoryNode" />
-              <item name="CopernicusExplorer" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -571,7 +551,14 @@
       <option name="project" value="LOCAL" />
       <updated>1530004789224</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="Add PL.shp fille containing the border shape">
+      <created>1530004855598</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1530004855598</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TodoView">
@@ -631,7 +618,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add file" />
     <MESSAGE value="Delete unused lines" />
     <MESSAGE value="Fix line separators" />
     <MESSAGE value="Update database schema" />
@@ -656,7 +642,8 @@
     <MESSAGE value="Remove ProductOrder table from the Admin view" />
     <MESSAGE value="Add static url" />
     <MESSAGE value="Add a module to the requirements file" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add a module to the requirements file" />
+    <MESSAGE value="Add PL.shp fille containing the border shape" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add PL.shp fille containing the border shape" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -991,8 +978,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/requirements.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="2" column="26" lean-forward="false" selection-start-line="2" selection-start-column="26" selection-end-line="2" selection-end-column="26" />
+        <state relative-caret-position="126">
+          <caret line="7" column="10" lean-forward="false" selection-start-line="7" selection-start-column="10" selection-end-line="7" selection-end-column="10" />
           <folding />
         </state>
       </provider>
