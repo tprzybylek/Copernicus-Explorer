@@ -39,7 +39,7 @@ def update_database():
         return e
 
     def get_last_update():
-        f = open('/home/tomasz/PycharmProjects/copernicus-django/CopernicusExplorer/search/update_database.log', 'r')
+        f = open(os.path.join(BASE_DIR, 'search/update_database.log'), 'r')
         log = f.readlines()
         last_line = log[-1]
 
@@ -59,7 +59,7 @@ def update_database():
                 }
 
     def write_update_time(status, last_product_time):
-        f = open('/home/tomasz/PycharmProjects/copernicus-django/CopernicusExplorer/search/update_database.log', 'a')
+        f = open(os.path.join(BASE_DIR, 'search/update_database.log'), 'a')
         last_product_time = last_product_time + timedelta(milliseconds=1)
         f.write(last_product_time.__format__('%Y-%m-%d %H:%M:%S.%f')
                 + ' ' + status + '\n')
@@ -205,6 +205,7 @@ def update_database():
     else:
         print("DB update complete")
 
+
 def download_product(id):
     """
     Downloads a Sentinel product from ESA archive and writes it to the hard drive
@@ -226,6 +227,7 @@ def download_product(id):
 
     sys.stdout.flush()
 
+
 def unzip_product(id):
     """
     Unzips the product to /DOWNLOAD_PATH/id/
@@ -236,322 +238,355 @@ def unzip_product(id):
     zip_ref.extractall(os.path.join(TEMP_DIR, id))
     zip_ref.close()
 
-def clip_image_tiff(id, title, filename, sourceImagePath, outputImagePath):
-    def imageToArray(i):
+
+def clip_image_to_shape(source_image_path, output_image_path):
+    def image_to_array(pil_array):
         """
-        Converts a Python Imaging Library array to a
+        Converts a Python Imaging Library (PIL) array to a
         gdalnumeric image.
         """
-        a = gdalnumeric.fromstring(i.tobytes(), 'b')
-        a.shape = i.im.size[1], i.im.size[0]
-        return a
+        gdal_numeric_array = gdalnumeric.fromstring(pil_array.tobytes(), 'b')
+        gdal_numeric_array.shape = pil_array.im.size[1], pil_array.im.size[0]
+        return gdal_numeric_array
 
-    def arrayToImage(a):
-        """
-        Converts a gdalnumeric array to a
-        Python Imaging Library Image.
-        """
-        i = Image.fromstring('L', (a.shape[1], a.shape[0]),
-                             (a.astype('b')).tostring())
-        return i
+    def split_path(source_path):
+        file_dir = os.path.split(source_path)[0]
+        file_name = os.path.split(source_path)[1]
+        file_extension = os.path.splitext(file_name)[1]
+        file_name = os.path.splitext(file_name)[0]
 
-    def world2Pixel(geoMatrix, x, y):
+        print(file_name)
+
+        return file_dir, file_name, file_extension
+
+    def get_geometry_extent(polygons):
+        xs = []
+        ys = []
+        for polygon in polygons:
+            for point in polygon:
+                xs.append(point[0])
+                ys.append(point[1])
+
+        min_x = min(xs)
+        max_x = max(xs)
+        min_y = min(ys)
+        max_y = max(ys)
+
+        # min_x = min(points, key=lambda x: x[0])[0]
+        # max_x = max(points, key=lambda x: x[0])[0]
+        # min_y = min(points, key=lambda x: x[1])[1]
+        # max_y = max(points, key=lambda x: x[1])[1]
+        return min_x, max_x, min_y, max_y
+
+    def world_to_pixel(geotransform_matrix, x, y):
         """
         Uses a gdal geomatrix (gdal.GetGeoTransform()) to calculate
         the pixel location of a geospatial coordinate
         """
 
-        ulX = geoMatrix[0]
-        ulY = geoMatrix[3]
-        xDist = geoMatrix[1]
-        yDist = geoMatrix[5]
-        rtnX = geoMatrix[2]
-        rtnY = geoMatrix[4]
-        pixel = int((x - ulX) / xDist)
-        line = int((y - ulY) / yDist)
-        return (pixel, line)
+        min_x = geotransform_matrix[0]
+        max_y = geotransform_matrix[3]
+        pixel_size_x = geotransform_matrix[1]
+        pixel_size_y = geotransform_matrix[5]
+        # rtnX = geotransform_matrix[2]
+        # rtnY = geotransform_matrix[4]
+        column = int((x - min_x) / pixel_size_x)
+        row = int((y - max_y) / pixel_size_y)
+        return column, row
 
-    def getGeometryExtent(points):
-        ## Convert the layer extent to image pixel coordinates V2?
-        minX = min(points, key=lambda x: x[0])[0]
-        maxX = max(points, key=lambda x: x[0])[0]
-        minY = min(points, key=lambda x: x[1])[1]
-        maxY = max(points, key=lambda x: x[1])[1]
-        return minX, maxX, minY, maxY
+    source_file_dir, source_file_name, source_file_extension = split_path(source_image_path)
 
-    def GetPixelCoords(col, row):
-        xp = a * col + b * row + a * 0.5 + b * 0.5 + c
-        yp = d * col + e * row + d * 0.5 + e * 0.5 + f
-        return (xp, yp)
+    # Output file geographic projection
+    wkt_projection = 'GEOGCS["WGS 84",' \
+                     'DATUM["WGS_1984",' \
+                     'SPHEROID["WGS 84",6378137,298.257223563,' \
+                     'AUTHORITY["EPSG","7030"]],' \
+                     'AUTHORITY["EPSG","6326"]],' \
+                     'PRIMEM["Greenwich",0,' \
+                     'AUTHORITY["EPSG","8901"]],' \
+                     'UNIT["degree",0.01745329251994328,' \
+                     'AUTHORITY["EPSG","9122"]],' \
+                     'AUTHORITY["EPSG","4326"]]'
 
-    wkt_projection = 'GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]'
+    if source_file_extension == '.tif' or source_file_extension == '.tiff':
+        source_image = gdal.Open(source_image_path)
 
-    ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+        # (x, y) coordinates refer are geographical coordinates (latitude and longtitude)
+        # (i, j) and (cols, rows) are pixel coordinates
 
-    SOURCE_IMAGE_PATH = os.path.join(sourceImagePath, filename + '.tiff')
-    FINAL_IMAGE_PATH = os.path.join(outputImagePath, filename + '.tiff')
+        # Read coordinates of ground control points (GCPs) and calculate their extent (min and max x, y values)
+        gcps = source_image.GetGCPs()
+        gcp_x = []
+        gcp_y = []
+        for a, val in enumerate(gcps):
+            gcp_x.append(gcps[a].GCPX)
+            gcp_y.append(gcps[a].GCPY)
+        min_source_x = min(gcp_x)
+        max_source_x = max(gcp_x)
+        min_source_y = min(gcp_y)
+        max_source_y = max(gcp_y)
 
-    source_image = gdal.Open(SOURCE_IMAGE_PATH)
+        # A warped virtual raster (middle_raster) needs to be created
+        # because the source_raster has no geographical projection.
+        # That's why it's being reprojected from None to wkt_projection (None to WGS84).
+        error_threshold = 0.125
+        resampling = gdal.GRA_NearestNeighbour
+        middle_image = gdal.AutoCreateWarpedVRT(source_image, None, wkt_projection, resampling, error_threshold)
+        source_image = None
 
-    gcps = source_image.GetGCPs()
+        # Calculate the GeoTransform matrix for the input image
+        # geotransform[0]   top left x, minimal x value
+        # geotransform[1]   pixel width, pixel size in x dimension
+        # geotransform[2]   0
+        # geotransform[3]   top left y, maximal y value
+        # geotransform[4]   0
+        # geotransform[5]   pixel height, pixel size in y dimension, should be negative
+        source_cols = middle_image.RasterXSize
+        source_rows = middle_image.RasterYSize
+        geotransform = [min_source_x, (max_source_x - min_source_x) / source_cols, 0,
+                        max_source_y, 0, (max_source_y - min_source_y) / source_rows * (-1)]
 
-    gcp_x = []
-    gcp_y = []
+        # Calculate the x, y coordinates for a lower right corner of the source_image
+        pixel_size_source_x = geotransform[1]
+        pixel_size_source_y = geotransform[5]
+        max_source_x = min_source_x + (source_cols * pixel_size_source_x)
+        min_source_y = max_source_y + (source_rows * pixel_size_source_y)
 
-    for a, val in enumerate(gcps):
-        gcp_x.append(gcps[a].GCPX)
-        gcp_y.append(gcps[a].GCPY)
+        # Create a polygon equal to extent of the source_image
+        # POLYGON((x1 y1, x2 y2, x3 y3, x4 y4, x1 y1))
+        image_wkt = 'POLYGON ((' \
+                    + str(min_source_x) + ' ' \
+                    + str(max_source_y) + ',' \
+                    + str(max_source_x) + ' ' \
+                    + str(max_source_y) + ',' \
+                    + str(max_source_x) + ' ' \
+                    + str(min_source_y) + ',' \
+                    + str(min_source_x) + ' ' \
+                    + str(min_source_y) + ',' \
+                    + str(min_source_x) + ' ' \
+                    + str(max_source_y) + '))'
+        source_geometry = ogr.CreateGeometryFromWkt(image_wkt)
 
-    geotransform = {'minX': min(gcp_x), 'maxX': max(gcp_x), 'minY': min(gcp_y), 'maxY': max(gcp_y)}
+        # Load a *.shp file and read the single feature containing border
+        shapefile = ogr.Open(SHP_PATH)
+        shapefile_layer = shapefile.GetLayer("PL")
+        shapefile_polygon = shapefile_layer.GetNextFeature()
+        border_geometry = shapefile_polygon.GetGeometryRef()
 
-    error_threshold = 0.125
-    resampling = gdal.GRA_NearestNeighbour
-    middle_image = gdal.AutoCreateWarpedVRT(source_image, None, wkt_projection, resampling, error_threshold)
+        # Calculate the spatial intersection of the source_image and the border shapefile
+        # It's a shape of the output image
+        output_geometry = border_geometry.Intersection(source_geometry)
+        output_geometry_type = output_geometry.GetGeometryType()
+        output_geometry_geom_count = output_geometry.GetGeometryCount()
 
-    source_image = None
+        # GetGeometryType() == 2: LINEARRING
+        # GetGeometryType() == 3: POLYGON
+        # GetGeometryType() == 6: MULTIPOLYGON
 
-    cols = middle_image.RasterXSize
-    rows = middle_image.RasterYSize
+        # Create a list of (x,y) pairs of output_geometry coordinates
+        # TODO: implement a pattern from the following 'elif' block (processing of POLYGONs and MULTIPOLYGONs)
+        polygons = []
+        if output_geometry_type == 3:
+            pts = output_geometry.GetGeometryRef(0)
+            polygon = []
+            for point in range(pts.GetPointCount()):
+                polygon.append((pts.GetX(point), pts.GetY(point)))
+            polygons.append(polygon)
+        elif output_geometry_type == 6:
+            for geom in range(output_geometry_geom_count):
+                pts = output_geometry.GetGeometryRef(geom)
+                pts = pts.GetGeometryRef(0)
+                polygon = []
+                for p in range(pts.GetPointCount()):
+                    polygon.append((pts.GetX(p), pts.GetY(p)))
+                polygons.append(polygon)
 
-    geotransform = [geotransform['minX'], (geotransform['maxX'] - geotransform['minX']) / cols, 0,
-                    geotransform['maxY'], 0, (geotransform['maxY'] - geotransform['minY']) / rows * (-1)]
+        # Calculate the pixel extent of the output_geometry polygon
+        min_output_x, max_output_x, min_output_y, max_output_y = get_geometry_extent(polygons)
+        min_output_i, max_output_j = world_to_pixel(geotransform, min_output_x, max_output_y)
+        max_output_i, min_output_j = world_to_pixel(geotransform, max_output_x, min_output_y)
 
-    c, a, b, f, d, e = middle_image.GetGeoTransform()
+        # If calculated extent is outside of the source_image array it has to be clipped
+        if min_output_i < 0:
+            min_output_i = 0
+        if max_output_j < 0:
+            max_output_j = 0
+        if max_output_i > source_cols:
+            max_output_i = source_cols
+        if min_output_j > source_rows:
+            min_output_j = source_rows
 
-    xOrigin = geotransform[0]
-    yOrigin = geotransform[3]
-    pixelWidth = geotransform[1]
-    pixelHeight = geotransform[5]
+        # Width and height of the output_raster in pixels
+        output_cols = int(max_output_i - min_output_i)
+        output_rows = int(min_output_j - max_output_j)
 
-    sourceMaxRasterX = xOrigin + (cols * pixelWidth)
-    sourceMinRasterY = yOrigin + (rows * pixelHeight)
+        # Read the middle image as array and select pixels within calculated range
+        middle_array = np.array(middle_image.GetRasterBand(1).ReadAsArray())
+        clip = middle_array[max_output_j:min_output_j, min_output_i:max_output_i]
 
-    ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+        # Calculate the GeoTransform matrix for the output image, it has a different x and y origin
+        output_geotransform = geotransform
+        output_geotransform[0] = min_output_x
+        output_geotransform[3] = max_output_y
 
-    shapefile = ogr.Open(SHP_PATH)
-    lyr = shapefile.GetLayer("PL")
-    poly = lyr.GetNextFeature()
-    cutterGeometry = poly.GetGeometryRef()
+        # Convert (x,y) pairs of output_geometry coordinates to pixel coordinates
+        polygons_pixel = []
+        for polygon in polygons:
+            polygon_pixel = []
+            for point in polygon:
+                polygon_pixel.append(world_to_pixel(output_geotransform, point[0], point[1]))
+            polygons_pixel.append(polygon_pixel)
 
-    # str(xOrigin) + ' ' + str(yOrigin) + ',' + str(sourceMaxRasterX), str(yOrigin),str(sourceMaxRasterX), str(sourceMinRasterY),str(xOrigin), str(sourceMinRasterY),str(xOrigin), str(yOrigin)
+        # Create a new PIL image and rasterize the clipping shape
+        polygon_raster = Image.new("L", (output_cols, output_rows), 1)
+        rasterize = ImageDraw.Draw(polygon_raster)
 
-    image_WKT = 'POLYGON ((' + str(xOrigin) + ' ' + str(yOrigin) + ',' + str(sourceMaxRasterX) + ' ' + str(yOrigin) + ',' + str(sourceMaxRasterX) + ' ' + str(sourceMinRasterY) + ',' + str(xOrigin) + ' ' + str(sourceMinRasterY) + ',' + str(xOrigin) + ' ' + str(yOrigin) + '))'
+        for polygon in polygons_pixel:
+            rasterize.polygon(polygon, 0)
 
-    rasterGeometry = ogr.CreateGeometryFromWkt(image_WKT)
-
-    shapei = cutterGeometry.Intersection(rasterGeometry)
-
-    pts = shapei.GetGeometryRef(0)
-    points = []
-    for p in range(pts.GetPointCount()):
-        points.append((pts.GetX(p), pts.GetY(p)))
-    minX, maxX, minY, maxY = getGeometryExtent(points)
-
-    ulX, ulY = world2Pixel(geotransform, minX, maxY)
-    lrX, lrY = world2Pixel(geotransform, maxX, minY)
-
-    print(ulX, ulY, lrX, lrY)
-
-    # srcArray = gdalnumeric.LoadFile(srcImage_path)
-
-    # np.array(ds.GetRasterBand(1).ReadAsArray())
-
-    #middle_array = gdalnumeric.LoadFile(srcImage_path)
-
-    middle_array = np.array(middle_image.GetRasterBand(1).ReadAsArray())
-
-
-    # geoTrans = srcImage.GetGeoTransform() ???
-    # geoTrans = middle_image.GetGeoTransform()
-
-    if (ulX < 0):
-        ulX = 0
-    if (ulY < 0):
-        ulY = 0
-    if (lrX > cols):
-        lrX = cols
-    if (lrY > rows):
-        lrY = rows
-
-    pxWidth = int(lrX - ulX)
-    pxHeight = int(lrY - ulY)
-
-    clip = middle_array[ulY:lrY, ulX:lrX]
-
-    geoTrans = list(geotransform)
-    geoTrans[0] = minX
-    geoTrans[3] = maxY
-
-    pixels = []
-
-    for p in points:
-        pixels.append(world2Pixel(geoTrans, p[0], p[1]))
-
-    rasterPoly = Image.new("L", (pxWidth, pxHeight), 1)
-    rasterize = ImageDraw.Draw(rasterPoly)
-    rasterize.polygon(pixels, 0)
-    mask = imageToArray(rasterPoly)
-
-    try:
+        mask = image_to_array(polygon_raster)
         clip = gdalnumeric.choose(mask, (clip, 0)).astype(gdalnumeric.uint16)
-    except ValueError:
-        clip = mask
 
-    driver = gdal.GetDriverByName('GTiff')
-    final_image = driver.Create(FINAL_IMAGE_PATH, pxWidth, pxHeight, 1, gdal.GDT_UInt16)
-    final_image.GetRasterBand(1).WriteArray(clip)
+        # Create the output file
+        driver = gdal.GetDriverByName('GTiff')
+        # !
+        # proj = middle_image.GetProjection()
+        output_image = driver.Create(output_image_path, output_cols, output_rows, 1, gdal.GDT_UInt16)
+        output_image.GetRasterBand(1).WriteArray(clip)
+        output_image.SetGeoTransform(output_geotransform)
+        # !
+        output_image.SetProjection(wkt_projection)
+        output_image.FlushCache()
+        output_image = None
 
-    proj = middle_image.GetProjection()
-    final_image.SetGeoTransform(geoTrans)
-    final_image.SetProjection(proj)
-    final_image.FlushCache()
-    final_image = None
+    elif source_file_extension == '.jp2':
+        source_image = gdal.Open(source_image_path)
 
-def clip_image_jp2(filename, sourceImagePath, outputImagePath):
-    def imageToArray(i):
-        """
-        Converts a Python Imaging Library array to a
-        gdalnumeric image.
-        """
-        a = gdalnumeric.fromstring(i.tobytes(), 'b')
-        a.shape = i.im.size[1], i.im.size[0]
-        return a
+        # TODO: output_image should be in UTM projection
+        gdal.Warp(os.path.join(source_file_dir,
+                               source_file_name
+                               + '_WGS84'
+                               + source_file_extension),
+                  source_image,
+                  dstSRS='EPSG:4326')
 
-    def arrayToImage(a):
-        """
-        Converts a gdalnumeric array to a
-        Python Imaging Library Image.
-        """
-        i = Image.fromstring('L', (a.shape[1], a.shape[0]),
-                             (a.astype('b')).tostring())
-        return i
+        source_image = gdal.Open(os.path.join(source_file_dir,
+                                              source_file_name
+                                              + '_WGS84'
+                                              + source_file_extension))
 
-    def world2Pixel(geoMatrix, x, y):
-        """
-        Uses a gdal geomatrix (gdal.GetGeoTransform()) to calculate
-        the pixel location of a geospatial coordinate
-        """
+        source_array = gdalnumeric.LoadFile(os.path.join(source_file_dir,
+                                                         source_file_name
+                                                         + '_WGS84'
+                                                         + source_file_extension))
+        geotransform = source_image.GetGeoTransform()
 
-        ulX = geoMatrix[0]
-        ulY = geoMatrix[3]
-        xDist = geoMatrix[1]
-        yDist = geoMatrix[5]
-        rtnX = geoMatrix[2]
-        rtnY = geoMatrix[4]
-        pixel = int((x - ulX) / xDist)
-        line = int((y - ulY) / yDist)
-        return (pixel, line)
+        min_source_x = geotransform[0]
+        max_source_y = geotransform[3]
 
-    def getGeometryExtent(points):
-        ## Convert the layer extent to image pixel coordinates V2?
-        minX = min(points, key=lambda x: x[0])[0]
-        maxX = max(points, key=lambda x: x[0])[0]
-        minY = min(points, key=lambda x: x[1])[1]
-        maxY = max(points, key=lambda x: x[1])[1]
-        return minX, maxX, minY, maxY
+        source_cols = source_image.RasterXSize
+        source_rows = source_image.RasterYSize
 
-    SOURCE_IMAGE_PATH = os.path.join(sourceImagePath, filename + '.jp2')
-    FINAL_IMAGE_PATH = os.path.join(outputImagePath, filename + '.jp2')
+        pixel_size_source_x = geotransform[1]
+        pixel_size_source_y = geotransform[5]
+        max_source_x = min_source_x + (source_cols * pixel_size_source_x)
+        min_source_y = max_source_y + (source_rows * pixel_size_source_y)
 
-    ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+        image_wkt = 'POLYGON ((' \
+                    + str(min_source_x) + ' ' \
+                    + str(max_source_y) + ',' \
+                    + str(max_source_x) + ' ' \
+                    + str(max_source_y) + ',' \
+                    + str(max_source_x) + ' ' \
+                    + str(min_source_y) + ',' \
+                    + str(min_source_x) + ' ' \
+                    + str(min_source_y) + ',' \
+                    + str(min_source_x) + ' ' \
+                    + str(max_source_y) + '))'
+        source_geometry = ogr.CreateGeometryFromWkt(image_wkt)
 
-    srcImage = gdal.Open(os.path.join(sourceImagePath, filename + '.jp2'))
-    gdal.Warp(os.path.join(sourceImagePath, filename + '_WGS84.jp2'), srcImage, dstSRS='EPSG:4326')
+        shapefile = ogr.Open(SHP_PATH)
+        shapefile_layer = shapefile.GetLayer("PL")
+        shapefile_polygon = shapefile_layer.GetNextFeature()
+        border_geometry = shapefile_polygon.GetGeometryRef()
 
-    ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+        output_geometry = border_geometry.Intersection(source_geometry)
+        output_geometry_type = output_geometry.GetGeometryType()
+        output_geometry_geom_count = output_geometry.GetGeometryCount()
 
-    srcImage = gdal.Open(os.path.join(sourceImagePath, filename + '_WGS84.jp2'))
-    srcArray = gdalnumeric.LoadFile(os.path.join(sourceImagePath, filename + '_WGS84.jp2'))
-    geoTrans = srcImage.GetGeoTransform()
+        # GetGeometryType() == 2: LINEARRING
+        # GetGeometryType() == 3: POLYGON
+        # GetGeometryType() == 6: MULTIPOLYGON
+        polygons = []
+        if output_geometry_type == 3:
+            pts = output_geometry.GetGeometryRef(0)
+            polygon = []
+            for point in range(pts.GetPointCount()):
+                polygon.append((pts.GetX(point), pts.GetY(point)))
+            polygons.append(polygon)
 
-    sourceMinRasterX = geoTrans[0]
-    xPixelSize = geoTrans[1]
-    sourceMaxRasterY = geoTrans[3]
-    yPixelSize = geoTrans[5]
+        elif output_geometry_type == 6:
+            for geom in range(output_geometry_geom_count):
+                pts = output_geometry.GetGeometryRef(geom)
+                pts = pts.GetGeometryRef(0)
+                polygon = []
+                for p in range(pts.GetPointCount()):
+                    polygon.append((pts.GetX(p), pts.GetY(p)))
+                polygons.append(polygon)
 
-    sourceRasterHeight = srcImage.RasterYSize
-    sourceRasterWidth = srcImage.RasterXSize
+        min_output_x, max_output_x, min_output_y, max_output_y = get_geometry_extent(polygons)
 
-    sourceMaxRasterX = sourceMinRasterX + (sourceRasterWidth * xPixelSize)
-    sourceMinRasterY = sourceMaxRasterY + (sourceRasterHeight * yPixelSize)
+        min_ouput_i, max_output_j = world_to_pixel(geotransform, min_output_x, max_output_y)
+        max_output_i, min_output_j = world_to_pixel(geotransform, max_output_x, min_output_y)
 
-    # Create an OGR layer from a boundary shapefile
-    shapefile = ogr.Open(SHP_PATH)
-    lyr = shapefile.GetLayer("PL")
-    poly = lyr.GetNextFeature()
-    cutterGeometry = poly.GetGeometryRef()
+        if min_ouput_i < 0:
+            min_ouput_i = 0
+        if max_output_j < 0:
+            max_output_j = 0
+        if max_output_i > source_cols:
+            max_output_i = source_cols
+        if min_output_j > source_rows:
+            min_output_j = source_rows
 
-    rasterWKT = "POLYGON ((%s %s, %s %s, %s %s, %s %s, %s %s))" % (
-    str(sourceMinRasterX), str(sourceMaxRasterY), str(sourceMaxRasterX), str(sourceMaxRasterY), str(sourceMaxRasterX),
-    str(sourceMinRasterY), str(sourceMinRasterX), str(sourceMinRasterY), str(sourceMinRasterX), str(sourceMaxRasterY))
+        output_cols = int(max_output_i - min_ouput_i)
+        output_rows = int(min_output_j - max_output_j)
 
-    rasterGeometry = ogr.CreateGeometryFromWkt(rasterWKT)
+        clip = source_array[max_output_j:min_output_j, min_ouput_i:max_output_i]
 
-    shapei = cutterGeometry.Intersection(rasterGeometry)
+        output_geotransform = list(geotransform)
+        output_geotransform[0] = min_output_x
+        output_geotransform[3] = max_output_y
 
-    pts = shapei.GetGeometryRef(0)
-    points = []
-    for p in range(pts.GetPointCount()):
-        points.append((pts.GetX(p), pts.GetY(p)))
-    minX, maxX, minY, maxY = getGeometryExtent(points)
+        polygons_pixel = []
+        for polygon in polygons:
+            polygon_pixel = []
+            for point in polygon:
+                polygon_pixel.append(world_to_pixel(output_geotransform, point[0], point[1]))
+            polygons_pixel.append(polygon_pixel)
 
-    ulX, ulY = world2Pixel(geoTrans, minX, maxY)
-    lrX, lrY = world2Pixel(geoTrans, maxX, minY)
+        polygon_raster = Image.new("L", (output_cols, output_rows), 1)
+        rasterize = ImageDraw.Draw(polygon_raster)
 
-    if (ulX < 0):
-        ulX = 0
-    if (ulY < 0):
-        ulY = 0
-    if (lrX > sourceRasterWidth):
-        lrX = sourceRasterWidth
-    if (lrY > sourceRasterHeight):
-        lrY = sourceRasterHeight
+        for polygon in polygons_pixel:
+            rasterize.polygon(polygon, 0)
 
-    pxWidth = int(lrX - ulX)
-    pxHeight = int(lrY - ulY)
+        mask = image_to_array(polygon_raster)
 
-    clip = srcArray[ulY:lrY, ulX:lrX]
-
-    # Create a new geomatrix for the image
-    geoTrans = list(geoTrans)
-    geoTrans[0] = minX
-    geoTrans[3] = maxY
-
-    pixels = []
-
-    for p in points:
-        pixels.append(world2Pixel(geoTrans, p[0], p[1]))
-
-    rasterPoly = Image.new("L", (pxWidth, pxHeight), 1)
-    rasterize = ImageDraw.Draw(rasterPoly)
-    rasterize.polygon(pixels, 0)
-    mask = imageToArray(rasterPoly)
-
-    ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
-
-    try:
         clip = gdalnumeric.choose(mask, (clip, 0)).astype(gdalnumeric.uint16)
-    except ValueError:
-        clip = mask
 
-    ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+        driver = gdal.GetDriverByName('GTiff')
+        output_image = driver.Create(output_image_path, output_cols, output_rows, 1, gdal.GDT_UInt16)
+        output_image.GetRasterBand(1).WriteArray(clip)
 
-    # pxWidth = lrX - ulX
-    # pxHeight = lrY - ulY
+        proj = source_image.GetProjection()
+        output_image.SetGeoTransform(output_geotransform)
+        output_image.SetProjection(proj)
+        output_image.FlushCache()
+        output_image = None
 
-    FINAL_IMAGE_PATH = os.path.join(outputImagePath, filename + '.tiff')
+    else:
+        print('unknown file format')
 
-    print(filename)
-
-    driver = gdal.GetDriverByName('GTiff')
-    final_image = driver.Create(FINAL_IMAGE_PATH, pxWidth, pxHeight, 1, gdal.GDT_UInt16)
-    final_image.GetRasterBand(1).WriteArray(clip)
-
-    proj = srcImage.GetProjection()
-    final_image.SetGeoTransform(geoTrans)
-    final_image.SetProjection(proj)
-    final_image.FlushCache()
-    final_image = None
 
 def zip_product(id, title):
     """
@@ -585,12 +620,10 @@ def zip_product(id, title):
 
     shutil.rmtree(folder_path)
 
+
 def iterate_product(id, title, satellite):
     """
     Iterates over downloaded product content and calls the clip function for each imagery file (*.tiff or *.jp2).
-
-    :param obj product: django.models Product object
-    :param obj order: django.models Order object
     """
 
     if (satellite[:2] == 'S1'):
@@ -599,14 +632,14 @@ def iterate_product(id, title, satellite):
 
         for image in os.listdir(os.path.join(TEMP_DIR, id, title + '.SAFE', 'measurement')):
             if image.endswith('.tiff'):
-                source_image_path = os.path.join(TEMP_DIR, id, title + '.SAFE', 'measurement')
-                output_image_path = os.path.join(TEMP_DIR, title)
+                source_image_path = os.path.join(TEMP_DIR, id, title + '.SAFE', 'measurement', image)
+                output_image_path = os.path.join(TEMP_DIR, title, image)
 
                 print(source_image_path)
                 print(output_image_path)
                 print(image)
 
-                clip_image_tiff(id, title, image[:-5], source_image_path, output_image_path)
+                clip_image_to_shape(source_image_path, output_image_path)
 
         zip_product(id, title)
 
@@ -627,13 +660,13 @@ def iterate_product(id, title, satellite):
 
                             # orders/40/S2A_MSIL2A_20180529T101031_N0208_R022_T33UVS_20180529T112942/L2A_T33UVS_A015320_20180529T101225/R20m/T33UVS_20180529T101031_B07_20m/.tiff
 
-                            source_image_path = os.path.join(TEMP_DIR, id, title + '.SAFE', 'GRANULE', sub, 'IMG_DATA', subsub)
-                            output_image_path = os.path.join(TEMP_DIR, title, sub, subsub)
+                            source_image_path = os.path.join(TEMP_DIR, id, title + '.SAFE', 'GRANULE', sub, 'IMG_DATA', subsub, image)
+                            output_image_path = os.path.join(TEMP_DIR, title, sub, subsub, image)
 
                             print(source_image_path)
                             print(output_image_path)
 
-                            clip_image_jp2(image[:-4], source_image_path, output_image_path)
+                            clip_image_to_shape(source_image_path, output_image_path)
 
 
 
@@ -644,9 +677,9 @@ def iterate_product(id, title, satellite):
 
                 for image in os.listdir(os.path.join(TEMP_DIR, id, title + '.SAFE', 'GRANULE', sub, 'IMG_DATA')):
                     if image.endswith('.jp2'):
-                        source_image_path = os.path.join(TEMP_DIR, id, title + '.SAFE', 'GRANULE', sub, 'IMG_DATA')
-                        output_image_path = os.path.join(TEMP_DIR, title, sub)
-                        clip_image_jp2(image[:-4], source_image_path, output_image_path)
+                        source_image_path = os.path.join(TEMP_DIR, id, title + '.SAFE', 'GRANULE', sub, 'IMG_DATA', image)
+                        output_image_path = os.path.join(TEMP_DIR, title, sub, image)
+                        clip_image_to_shape(source_image_path, output_image_path)
 
         zip_product(id, title)
 
@@ -659,7 +692,8 @@ def rolling_archive():
     time_range_end = timezone.now()
     time_range_start = time_range_end - timedelta(hours=6)
 
-    expired_products = Product.objects.filter(is_downloaded=True, ingestion_date__lt=time_range_start)
+    expired_products = Product.objects.filter(is_downloaded=True,
+                                              ingestion_date__lt=time_range_start)
     print(expired_products)
 
     for product in expired_products:
@@ -669,7 +703,9 @@ def rolling_archive():
 
     print('deleted expired products')
 
-    fresh_products = Product.objects.filter(is_downloaded=False, ingestion_date__gte=time_range_start, product_type='GRD')
+    fresh_products = Product.objects.filter(is_downloaded=False,
+                                            ingestion_date__gte=time_range_start,
+                                            product_type='GRD')
     print(fresh_products)
 
     for product in fresh_products:
@@ -677,7 +713,7 @@ def rolling_archive():
         unzip_product(product.id)
 
         shutil.rmtree(os.path.join(TEMP_DIR, product.id + '.zip'))
-
+        # TODO: iterate_product only if it crosses the border
         iterate_product(product.id, product.title, product.satellite)
 
         product.is_downloaded = True
