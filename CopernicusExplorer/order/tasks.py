@@ -11,7 +11,6 @@ import shutil
 import numpy
 from osgeo import ogr, osr, gdal
 
-#sys.path.append('/home/tomasz/PycharmProjects/copernicus-django/CopernicusExplorer/modules')
 
 from django.conf import settings
 
