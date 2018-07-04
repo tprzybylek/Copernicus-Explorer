@@ -1,7 +1,18 @@
 {% extends "layout.html" %}
 
+{% block name %}
+
+    Potwierdzenie złożenia zamówienia
+
+{% endblock %}
+
+{% block header %}
+
+    Potwierdzenie złożenia zamówienia
+
+{% endblock %}
+
 {% block content %}
-    <h1>Potwierdzenie złożenia zamówienia</h1>
     <p>Zamówienie oczekuje na realizację</p>
 
     <p>ID zamówienia: {{ order.id }}</p>
@@ -10,6 +21,5 @@
     <p>Adres e-mail: {{ order.e_mail }}</p>
 
     <p>Śledzenie statusu zamówienia i pobranie go jest możliwe pod poniższym linkiem:</p>
-    <p><a href="{% 'order_detail' order_id=order.id %}">{{ order.id }}</a></p>
-
+    <p><a href="{% url 'order_detail' order_id=order.id %}">{{ order.id }}</a></p>
 {% endblock %}

@@ -1,8 +1,18 @@
 {% extends "layout.html" %}
 
-{% block content %}
-    <h1>Szczegóły zamówienia</h1>
+{% block name %}
 
+    Szczegóły zamówienia
+
+{% endblock %}
+
+{% block header %}
+
+    Szczegóły zamówienia
+
+{% endblock %}
+
+{% block content %}
     <p>ID zamówienia: {{ order.id }}</p>
     <p>Status zamówienia: {{ order.status }}</p>
     <p>Data złożenia zamówienia: {{ order.ordered_date_time }}</p>

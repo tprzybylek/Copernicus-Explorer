@@ -6,6 +6,12 @@
 
 {% endblock %}
 
+{% block header %}
+
+    Wyszukiwanie
+
+{% endblock %}
+
 {%block scripts %}
     {% load static %}
     <script src="{% static '/js/leaflet.draw/Leaflet.draw.js' %}"></script>
@@ -47,35 +53,31 @@
 
     <script>
         $(document).ready(function(){
-            $('#id_polarisation_mode').hide()
-            $('#id_product_type').hide()
-            $('#id_sensor_mode').hide()
-            $('#id_cloud_cover').hide()
+            $('.formS1').hide()
+            $('.formS2').hide()
 
             $('#id_satellite').change(function(){
                 selected_value = $("input[name='satellite']:checked").val();
 
                 if (selected_value=='S1') {
-                    $('#id_polarisation_mode').show()
-                    $('#id_product_type').show()
-                    $('#id_sensor_mode').show()
-                    $('#id_cloud_cover').hide()
+                    $('.formS2').hide()
+                    $('.formS1').show()
+                    console.log('S1')
                 } else if (selected_value=='S2') {
-                    $('#id_polarisation_mode').hide()
-                    $('#id_product_type').hide()
-                    $('#id_sensor_mode').hide()
-                    $('#id_cloud_cover').show()
+                    $('.formS1').hide()
+                    $('.formS2').show()
+                    console.log('S2')
                 };
             });
         });
     </script>
+
+
 {% endblock %}
 
 {% block content %}
 
-<h1>Wyszukiwanie</h1>
-
-<div class="col" id="mapid">
+<div class="col" id="mapid_">
     {% load static %}
     <script src="{% static '/js/search-form-map.js' %}"></script>
 </div>
@@ -83,8 +85,244 @@
 <div class="col">
     <form action="results/" method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" class="button" value="Szukaj" />
+
+        {{ form.non_field_errors }}
+        {{ form.source.errors }}
+        {{ form.source }}
+
+        <table>
+            <tr>
+                <th colspan="6">
+                    Data pomiaru:
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    {{ form.min_sensing_date.label_tag }}
+                </th>
+                <td>
+                    {{ form.min_sensing_date.errors }}
+                    {{ form.min_sensing_date }}
+                    {{ form.min_sensing_date.help_text }}
+                </td>
+                <th>
+                    {{ form.max_sensing_date.label_tag }}
+                </th>
+                <td>
+                    {{ form.max_sensing_date.errors }}
+                    {{ form.max_sensing_date }}
+                    {{ form.max_sensing_date.help_text }}
+                </td>
+                <td colspan="2">
+                    <input type="button" class="button-inline button-highlighted" value="7 dni" onclick="" />
+                    <input type="button" class="button-inline button-highlighted" value="14 dni" onclick="" />
+                    <input type="button" class="button-inline button-highlighted" value="28 dni" onclick="" />
+                    <input type="button" class="button-inline" value="Wyczyść" onclick="" />
+                </td>
+            </tr>
+            <tr>
+                <th colspan="6">
+                    Data przyjęcia:
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    {{ form.min_ingestion_date.label_tag }}
+                </th>
+                <td>
+                    {{ form.min_ingestion_date.errors }}
+                    {{ form.min_ingestion_date }}
+                    {{ form.min_ingestion_date.help_text }}
+                </td>
+                <th>
+                    {{ form.max_ingestion_date.label_tag }}
+                </th>
+                <td>
+                    {{ form.max_ingestion_date.errors }}
+                    {{ form.max_ingestion_date }}
+                    {{ form.max_ingestion_date.help_text }}
+                </td>
+                <td colspan="2">
+                    <input type="button" class="button-inline button-highlighted" value="7 dni" onclick="" />
+                    <input type="button" class="button-inline button-highlighted" value="14 dni" onclick="" />
+                    <input type="button" class="button-inline button-highlighted" value="28 dni" onclick="" />
+                    <input type="button" class="button-inline" value="Wyczyść" onclick="" />
+                </td>
+            </tr>
+            <tr>
+                <th colspan="6">
+                    Parametry satelity:
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    {{ form.satellite.label_tag }}
+                </th>
+
+
+                <td>
+                    <ul id="id_satellite">
+                        <li>
+                            <label for="id_satellite_0">
+                                <input type="radio" name="satellite" value="S1" required="" id="id_satellite_0">
+                                S1
+                            </label>
+                        </li>
+                        <li>
+                            <label for="id_satellite_1">
+                                <input type="radio" name="satellite" value="S2" required="" id="id_satellite_1">
+                                S2
+                            </label>
+                        </li>
+                    </ul>
+
+                </td>
+
+
+                <th>
+                    {{ form.orbit_direction.label_tag }}
+                </th>
+                <td>
+                    {{ form.orbit_direction.errors }}
+                    {{ form.orbit_direction }}
+                    {{ form.orbit_direction.help_text }}
+                </td>
+                <th>
+                    {{ form.relative_orbit_number.label_tag }}
+                </th>
+                <td>
+                    {{ form.relative_orbit_number.errors }}
+                    {{ form.relative_orbit_number }}
+                    {{ form.relative_orbit_number.help_text }}
+                </td>
+            </tr>
+            <tr>
+                <th class="formS1 formS2" colspan="6">
+                    Parametry produktu:
+                </th>
+            </tr>
+            <tr>
+                <th class="formS1 formS2">
+                    {{ form.product_type.label_tag }}
+                </th>
+                <td class="formS1 formS2" colspan="2">
+                    <ul>
+                        <li class="formS1">
+                            <label for="id_product_type_0">
+                                <input type="checkbox" name="product_type" value="GRD" id="id_product_type_0">
+                                GRD
+                            </label>
+                        </li>
+                        <li class="formS1">
+                            <label for="id_product_type_1">
+                                <input type="checkbox" name="product_type" value="SLC" id="id_product_type_1">
+                                SLC
+                            </label>
+                        </li>
+                        <li class="formS1">
+                            <label for="id_product_type_2">
+                                <input type="checkbox" name="product_type" value="RAW" id="id_product_type_2">
+                                RAW
+                            </label>
+                        </li>
+
+
+
+
+
+                        <li class="formS2">
+                            <label for="id_product_type_3">
+                                <input type="checkbox" name="product_type" value="S2MSI2A" id="id_product_type_3">
+                                S2MSI2A
+                            </label>
+                        </li>
+                        <li class="formS2">
+                            <label for="id_product_type_4">
+                                <input type="checkbox" name="product_type" value="S2MSI1C" id="id_product_type_4">
+                                S2MSI1C
+                            </label>
+                        </li>
+                    </ul>
+                </td>
+                <th class="formS1">
+                    {{ form.sensor_mode.label_tag }}
+                </th>
+                <td class="formS1" colspan="2">
+                    {{ form.sensor_mode.errors }}
+                    {{ form.sensor_mode }}
+                    {{ form.sensor_mode.help_text }}
+                </td>
+            </tr>
+            <tr>
+                <th class="formS1">
+                    {{ form.polarisation_mode.label_tag }}
+                </th>
+                <td class="formS1" colspan="5">
+                    {{ form.polarisation_mode.errors }}
+                    {{ form.polarisation_mode }}
+                    {{ form.polarisation_mode.help_text }}
+                </td>
+            </tr>
+            <tr>
+                <th class="formS2">
+                    {{ form.cloud_cover.label_tag }}
+                </th>
+                <td class="formS2" colspan="5">
+                    {{ form.cloud_cover.errors }}
+                    {{ form.cloud_cover }}
+                    {{ form.cloud_cover.help_text }}
+                </td>
+            </tr>
+            <tr>
+                <th colspan="6">
+                    Zasięg przestrzenny produktu:
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    {{ form.search_extent_min_x.label_tag }}
+                </th>
+                <td colspan="2">
+                    {{ form.search_extent_min_x.errors }}
+                    {{ form.search_extent_min_x }}
+                    {{ form.search_extent_min_x.help_text }}
+                </td>
+                <th>
+                    {{ form.search_extent_max_x.label_tag }}
+                </th>
+                <td colspan="2">
+                    {{ form.search_extent_max_x.errors }}
+                    {{ form.search_extent_max_x }}
+                    {{ form.search_extent_max_x.help_text }}
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    {{ form.search_extent_min_y.label_tag }}
+                </th>
+                <td colspan="2">
+                    {{ form.search_extent_min_y.errors }}
+                    {{ form.search_extent_min_y }}
+                    {{ form.search_extent_min_y.help_text }}
+                </td>
+                <th>
+                    {{ form.search_extent_max_y.label_tag }}
+                </th>
+                <td colspan="2">
+                    {{ form.search_extent_max_y.errors }}
+                    {{ form.search_extent_max_y }}
+                    {{ form.search_extent_max_y.help_text }}
+                </td>
+            </tr>
+        </table>
+
+        {% comment %}
+        <table>
+            {{ form }}
+        </table>
+        {% endcomment %}
+        <input type="button" class="button" onclick="" value="Wyczyść formularz" />
+        <input type="submit" class="button button-highlighted" value="Szukaj" />
     </form>
 </div>
 

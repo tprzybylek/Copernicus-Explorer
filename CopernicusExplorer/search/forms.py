@@ -5,7 +5,7 @@ import datetime
 class SearchForm(forms.Form):
     min_ingestion_date = forms.DateField(label='Od',
                                          required=True,
-                                         initial='2017-01-01')
+                                         initial=datetime.datetime.now() - datetime.timedelta(days=7))
 
     max_ingestion_date = forms.DateField(label='Do',
                                          required=True,
@@ -41,7 +41,8 @@ class SearchForm(forms.Form):
                                             label='Tryb sensora',
                                             choices=(('IW', 'IW'),
                                                      ('SM', 'SM'),
-                                                     ('EW', 'EW')),
+                                                     ('EW', 'EW'),
+                                                     ('WV', 'WV')),
                                             required=False)
 
     cloud_cover = forms.DecimalField(label='Maksymalny % pokrywy chmur',
