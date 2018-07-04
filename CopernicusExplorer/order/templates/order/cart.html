@@ -1,5 +1,17 @@
 {% extends "layout.html" %}
 
+{% block name %}
+
+    Twój koszyk
+
+{% endblock %}
+
+{% block header %}
+
+    Twój koszyk
+
+{% endblock %}
+
 {% block scripts %}
 
 <script>
@@ -51,10 +63,6 @@ $(document).ready(function(){
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <h1>Twój koszyk</h1>
-    </div>
-
     <div class="row" id="mapid">
         <script>
             var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -106,7 +114,7 @@ $(document).ready(function(){
         <form action="{% url 'order_confirm' %}" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" class="button" value="Złóż zamówienie" />
+        <input type="submit" class="button button-highlighted" value="Złóż zamówienie" />
         </form>
     </div>
 
