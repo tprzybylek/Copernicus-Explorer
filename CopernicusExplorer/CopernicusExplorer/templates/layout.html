@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+
+{% load static from staticfiles %}
+
 <html lang="en">
 <head>
     {% load static %}
@@ -12,22 +15,44 @@
     {% endblock %}
 
 </head>
-    <title>CopernicusExplorer - {% block name %} {% endblock %} </title>
+    <title>CopernicusExplorer - {% block name %} {% endblock %} {{ name }}</title>
 </head>
 
 <body>
-    <div class="row">
+    <div class="container">
+    <div class="row navigation-bar">
+
+            <img class="logo" src="{% static 'images/logow.png' %}"/>
+
         <ul>
-            <li><a href="{% url 'search_form' %}">Strona główna</a></li>
-            <li>Pomoc</li>
-            <li>O stronie</li>
             <li><a href="{% url 'cart_show_all' %}">Koszyk</a></li>
+            <li><a href="{% url 'pages_about' %}">O stronie</a></li>
+            <li><a href="{% url 'pages_help' %}">Pomoc</a></li>
+            <li><a href="{% url 'search_form' %}">Strona główna</a></li>
         </ul>
     </div>
+
+    <div class="row banner">
+        <div class="header">
+            <h1>{% block header %} {% endblock %}</h1>
+        </div>
+         <div class="description">
+            Jezioro Mietkowskie
+        </div>
+        <div class="contribution">
+            © Copernicus Sentinel data {% now "Y" %}
+        </div>
+    </div>
+
     <div class="row">
         {% block content %}
 
         {% endblock %}
+    </div>
+
+    <div class="row footer">
+
+    </div>
     </div>
 </body>
 </html>
