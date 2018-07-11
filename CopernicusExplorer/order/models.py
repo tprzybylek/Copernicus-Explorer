@@ -1,4 +1,5 @@
 from django.contrib.gis.db.models import PolygonField
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from search.models import Product
 
@@ -22,6 +23,7 @@ class Order(models.Model):
 
     status = models.PositiveSmallIntegerField(choices=STATUS_CHOICES)
     clip_extent = PolygonField()
+    layers = ArrayField(models.CharField(max_length=8), null=True, blank=True)
     products = models.ManyToManyField(Product)
 
     def __str__(self):

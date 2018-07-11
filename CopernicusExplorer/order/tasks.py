@@ -1,18 +1,18 @@
 from __future__ import absolute_import, unicode_literals
 from celery import shared_task
 
-import sys
 import os
-from django.utils import timezone
-import json
-import requests
-import zipfile
+import sys
 import shutil
+import zipfile
+import requests
+import json
 import numpy
 from osgeo import ogr, osr, gdal
 
-
+from django.utils import timezone
 from django.conf import settings
+from .models import Order, ProductOrder, Product
 
 # os.path.join(BASE_DIR, ...)
 
@@ -21,15 +21,14 @@ TEMP_DIR = os.path.join(BASE_DIR, 'data/temp')
 ORDERS_DIR = os.path.join(BASE_DIR, 'data/orders')
 IMAGERY_DIR = os.path.join(BASE_DIR, 'data/imagery')
 
-from .models import Order, ProductOrder, Product
 
-def download_product(id):
+def download_product(product_id):
     """
     Downloads a Sentinel product from ESA archive and writes it to the hard drive
-    :param str id: Product ID
+    :param str product_id: Product ID
     """
 
-    url = "https://scihub.copernicus.eu/dhus/odata/v1/Products('" + id + "')/$value"
+    url = "https://scihub.copernicus.eu/dhus/odata/v1/Products('" + product_id + "')/$value"
 
     passwords = json.load(open(os.path.join(BASE_DIR, 'passwords.json')))
 
@@ -38,21 +37,21 @@ def download_product(id):
 
     r = requests.get(url, auth=(username, password), stream=True)
     if r.status_code == 200:
-        with open(os.path.join(TEMP_DIR, id + '.zip'), 'wb') as f:
+        with open(os.path.join(TEMP_DIR, product_id + '.zip'), 'wb') as f:
             r.raw.decode_content = True
             shutil.copyfileobj(r.raw, f)
 
     sys.stdout.flush()
 
 
-def unzip_product(id):
+def unzip_product(product_id):
     """
     Unzips the product to /DOWNLOAD_PATH/id/
-    :param str id: Product ID
+    :param str product_id: Product ID
     """
 
-    zip_ref = zipfile.ZipFile(os.path.join(TEMP_DIR, id + '.zip'), 'r')
-    zip_ref.extractall(os.path.join(TEMP_DIR, id))
+    zip_ref = zipfile.ZipFile(os.path.join(TEMP_DIR, product_id + '.zip'), 'r')
+    zip_ref.extractall(os.path.join(TEMP_DIR, product_id))
     zip_ref.close()
 
 
@@ -70,207 +69,203 @@ def zip_order(order_id):
     contents = os.walk(folder_path)
 
     try:
-        zipFile = zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED)
+        zip_file = zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED)
         for root, folders, files in contents:
             for folder_name in folders:
                 absolute_path = os.path.join(root, folder_name)
                 relative_path = absolute_path.replace(parent_folder + '/', '')
-                zipFile.write(absolute_path, relative_path)
+                zip_file.write(absolute_path, relative_path)
 
             for file_name in files:
                 absolute_path = os.path.join(root, file_name)
                 relative_path = absolute_path.replace(parent_folder + '/', '')
-                zipFile.write(absolute_path, relative_path)
+                zip_file.write(absolute_path, relative_path)
     except IOError:
         sys.exit(1)
     finally:
-        zipFile.close()
+        zip_file.close()
 
     shutil.rmtree(folder_path)
 
 
-def clip_image_tiff(extent, source_image_path, output_image_path):
-    """
-    Clips a GeoTIFF image to defined bounding box and saves it as a *.tiff file
+def clip_image_to_extent(extent, source_image_path, output_image_path):
+    def split_path(source_path):
+        file_dir = os.path.split(source_path)[0]
+        file_name = os.path.split(source_path)[1]
+        file_extension = os.path.splitext(file_name)[1]
+        file_name = os.path.splitext(file_name)[0]
 
-    :param dict extent:
-    :param str source_image_path:
-    :param str output_image_path:
-    """
+        print(file_name)
 
-    WKT_Projection = 'GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]'
+        return file_dir, file_name, file_extension
 
-    dataset = gdal.Open(source_image_path)
-    cols = dataset.RasterXSize
-    rows = dataset.RasterYSize
+    def pixel_to_world(geotransform_matrix, column, row):
+        c = geotransform_matrix[0]
+        a = geotransform_matrix[1]
+        b = geotransform_matrix[2]
+        f = geotransform_matrix[3]
+        d = geotransform_matrix[4]
+        e = geotransform_matrix[5]
 
-    #################################################
+        xp = a * column + b * row + a * 0.5 + b * 0.5 + c
+        yp = d * column + e * row + d * 0.5 + e * 0.5 + f
 
-    GCPs = dataset.GetGCPs()
+        return xp, yp
 
-    GCPX = []
-    GCPY = []
+    source_file_dir, source_file_name, source_file_extension = split_path(source_image_path)
 
-    for a, val in enumerate(GCPs):
-        GCPX.append(GCPs[a].GCPX)
-        GCPY.append(GCPs[a].GCPY)
+    wkt_projection = 'GEOGCS["WGS 84",' \
+                     'DATUM["WGS_1984",' \
+                     'SPHEROID["WGS 84",6378137,298.257223563,' \
+                     'AUTHORITY["EPSG","7030"]],' \
+                     'AUTHORITY["EPSG","6326"]],' \
+                     'PRIMEM["Greenwich",0,' \
+                     'AUTHORITY["EPSG","8901"]],' \
+                     'UNIT["degree",0.01745329251994328,' \
+                     'AUTHORITY["EPSG","9122"]],' \
+                     'AUTHORITY["EPSG","4326"]]'
 
-    geotransform = {'minX': min(GCPX), 'maxX': max(GCPX), 'minY': min(GCPY), 'maxY': max(GCPY)}
+    if source_file_extension == '.tif' or source_file_extension == '.tiff':
+        source_image = gdal.Open(source_image_path)
 
-    #################################################
+        gcps = source_image.GetGCPs()
+        gcp_x = []
+        gcp_y = []
+        for gcp, val in enumerate(gcps):
+            gcp_x.append(gcps[gcp].GCPX)
+            gcp_y.append(gcps[gcp].GCPY)
+        min_source_x = min(gcp_x)
+        max_source_x = max(gcp_x)
+        min_source_y = min(gcp_y)
+        max_source_y = max(gcp_y)
 
-    error_threshold = 0.125
-    resampling = gdal.GRA_NearestNeighbour
-    dataset_middle = gdal.AutoCreateWarpedVRT(dataset, None, WKT_Projection, resampling, error_threshold)
+        error_threshold = 0.125
+        resampling = gdal.GRA_NearestNeighbour
+        middle_image = gdal.AutoCreateWarpedVRT(source_image, None, wkt_projection, resampling, error_threshold)
 
-    cols = dataset_middle.RasterXSize
-    rows = dataset_middle.RasterYSize
+        source_cols = middle_image.RasterXSize
+        source_rows = middle_image.RasterYSize
 
-    geotransform = [geotransform['minX'], (geotransform['maxX'] - geotransform['minX']) / cols, 0,
-                    geotransform['maxY'], 0, (geotransform['maxY'] - geotransform['minY']) / rows * (-1)]
+        geotransform = [min_source_x, (max_source_x - min_source_x) / source_cols, 0,
+                        max_source_y, 0, (max_source_y - min_source_y) / source_rows * (-1)]
 
-    dataset = None
+        source_image = None
 
-    c, a, b, f, d, e = dataset_middle.GetGeoTransform()
+        pixel_size_source_x = geotransform[1]
+        pixel_size_source_y = geotransform[5]
 
-    def GetPixelCoords(col, row):
-        xp = a * col + b * row + a * 0.5 + b * 0.5 + c
-        yp = d * col + e * row + d * 0.5 + e * 0.5 + f
-        return (xp, yp)
+        min_output_i = int((extent['min_x'] - min_source_x) / pixel_size_source_x)
+        max_output_j = int((extent['min_y'] - max_source_y) / pixel_size_source_y)
+        max_output_i = int((extent['max_x'] - min_source_x) / pixel_size_source_x)
+        min_output_j = int((extent['max_y'] - max_source_y) / pixel_size_source_y)
 
-    #################################################
+        output_cols = max_output_i - min_output_i + 1
+        output_rows = max_output_j - min_output_j + 1
 
-    xOrigin = geotransform[0]
-    yOrigin = geotransform[3]
-    pixelWidth = geotransform[1]
-    pixelHeight = geotransform[5]
+        middle_array = middle_image.ReadAsArray(min_output_i, min_output_j, output_cols, output_rows)
 
-    i1 = int((extent['min_x'] - xOrigin) / pixelWidth)
-    j1 = int((extent['min_y'] - yOrigin) / pixelHeight)
-    i2 = int((extent['max_x'] - xOrigin) / pixelWidth)
-    j2 = int((extent['max_y'] - yOrigin) / pixelHeight)
+        #################################################
 
-    new_cols = i2 - i1 + 1
-    new_rows = j1 - j2 + 1
+        output_gcps = []
 
-    data = dataset_middle.ReadAsArray(i1, j2, new_cols, new_rows)
+        i, j = pixel_to_world(geotransform, max_output_i, min_output_j)
+        output_gcps.append(gdal.GCP(i, j, 0.0, output_cols - 1, 0.0))  # BR
 
-    #################################################
+        i, j = pixel_to_world(geotransform, min_output_i, min_output_j)
+        output_gcps.append(gdal.GCP(i, j, 0.0, 0.0, 0.0))  # UL
 
-    newGCPs = []
-    diff = i2 - i1
+        i, j = pixel_to_world(geotransform, min_output_i, max_output_j)
+        output_gcps.append(gdal.GCP(i, j, 0.0, 0.0, output_rows - 1))  # BL
 
-    i, j = GetPixelCoords(i2, j2)
-    newGCPs.append(gdal.GCP(i, j, 0.0, new_cols - 1, 0.0))  # BR
+        i, j = pixel_to_world(geotransform, max_output_i, max_output_j)
+        output_gcps.append(gdal.GCP(i, j, 0.0, output_cols - 1, output_rows - 1))  # UR
 
-    i, j = GetPixelCoords(i1, j2)
-    newGCPs.append(gdal.GCP(i, j, 0.0, 0.0, 0.0))  # UL
+        #################################################
 
-    i, j = GetPixelCoords(i1, j1)
-    newGCPs.append(gdal.GCP(i, j, 0.0, 0.0, new_rows - 1))  # BL
+        # min_output_x = min_source_x + min_output_i * pixel_size_source_x
+        # max_output_y = max_source_y + min_output_j * pixel_size_source_y
+        # new_transform = (min_output_x, pixel_size_source_x, 0.0, max_output_y, 0.0, pixel_size_source_y)
 
-    i, j = GetPixelCoords(i2, j1)
-    newGCPs.append(gdal.GCP(i, j, 0.0, new_cols - 1, new_rows - 1))  # UR
+        output_image = gdal.GetDriverByName('GTiff').Create(output_image_path, output_cols, output_rows, bands=1,
+                                                            eType=gdal.GDT_Byte)
 
-    #################################################
+        output_image.SetProjection(wkt_projection)
+        output_image.SetGCPs(output_gcps, wkt_projection)
 
-    newX = xOrigin + i1 * pixelWidth
-    newY = yOrigin + j2 * pixelHeight
+        output_image.GetRasterBand(1).WriteArray(middle_array)
 
-    new_transform = (newX, pixelWidth, 0.0, newY, 0.0, pixelHeight)
+        output_image = None
+        middle_image = None
 
-    dst_ds = gdal.GetDriverByName('GTiff').Create(output_image_path, new_cols, new_rows, bands=1, eType=gdal.GDT_Byte)
+    elif source_file_extension == '.jp2':
+        source_spatial_reference = osr.SpatialReference()
+        source_spatial_reference.ImportFromWkt(wkt_projection)
 
-    dst_ds.SetProjection(WKT_Projection)
-    dst_ds.SetGCPs(newGCPs, WKT_Projection)
+        source_image = gdal.Open(source_image_path)
+        utm_projection = source_image.GetProjection()
 
-    dst_ds.GetRasterBand(1).WriteArray(data)
+        output_spatial_reference = osr.SpatialReference()
+        output_spatial_reference.ImportFromWkt(utm_projection)
 
-    dst_ds = None
-    dataset_middle = None
+        geotransform = source_image.GetGeoTransform()
 
+        error_threshold = 0.125
+        resampling = gdal.GRA_NearestNeighbour
+        dataset_middle = gdal.AutoCreateWarpedVRT(source_image, None, utm_projection, resampling, error_threshold)
 
-def clip_image_jp2(extent, source_image_path, output_image_path):
-    """
-    Clips a JPEG2000 image to defined bounding box and saves it as a *.jp2 file
+        cols = dataset_middle.RasterXSize
+        rows = dataset_middle.RasterYSize
 
-    :param dict extent:
-    :param str source_image_path:
-    :param str output_image_path:
-    """
-    WGS84_projection = 'GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]'
+        #################################################
 
-    in_srs = osr.SpatialReference()
-    in_srs.ImportFromWkt(WGS84_projection)
+        min_source_x = geotransform[0]
+        max_source_y = geotransform[3]
+        pixel_size_source_x = geotransform[1]
+        pixel_size_source_y = geotransform[5]
 
-    dataset = gdal.Open(source_image_path)
-    UTM_projection = dataset.GetProjection()
+        transform = osr.CoordinateTransformation(source_spatial_reference, output_spatial_reference)
 
-    out_srs = osr.SpatialReference()
-    out_srs.ImportFromWkt(UTM_projection)
+        min_output_x = transform.TransformPoint(extent['min_x'], extent['min_y'])[0]
+        max_output_y = transform.TransformPoint(extent['min_x'], extent['min_y'])[1]
+        max_output_x = transform.TransformPoint(extent['max_x'], extent['max_y'])[0]
+        min_output_y = transform.TransformPoint(extent['max_x'], extent['max_y'])[1]
 
-    cols = dataset.RasterXSize
-    rows = dataset.RasterYSize
+        # i1j1 = transform.TransformPoint(extent['min_x'], extent['min_y'])
+        # i2j2 = transform.TransformPoint(extent['max_x'], extent['max_y'])
 
-    #################################################
+        # min_output_i = int((i1j1[0] - min_source_x) / pixel_size_source_x)
+        # max_output_j = int((i1j1[1] - max_source_y) / pixel_size_source_y)
+        # max_output_i = int((i2j2[0] - min_source_x) / pixel_size_source_x)
+        # min_output_j = int((i2j2[1] - max_source_y) / pixel_size_source_y)
 
-    geotransform = dataset.GetGeoTransform()
+        min_output_i = int((min_output_x - min_source_x) / pixel_size_source_x)
+        max_output_j = int((max_output_y - max_source_y) / pixel_size_source_y)
+        max_output_i = int((max_output_x - min_source_x) / pixel_size_source_x)
+        min_output_j = int((min_output_y - max_source_y) / pixel_size_source_y)
 
-    #################################################
+        output_cols = max_output_i - min_output_i + 1
+        output_rows = max_output_j - min_output_j + 1
 
-    error_threshold = 0.125
-    resampling = gdal.GRA_NearestNeighbour
-    dataset_middle = gdal.AutoCreateWarpedVRT(dataset, None, UTM_projection, resampling, error_threshold)
+        source_array = source_image.ReadAsArray(min_output_i, min_output_j, output_cols, output_rows)
 
-    cols = dataset_middle.RasterXSize
-    rows = dataset_middle.RasterYSize
+        if numpy.any(source_array):
+            min_output_x = min_source_x + min_output_i * pixel_size_source_x
+            max_output_y = max_source_y + min_output_j * pixel_size_source_y
 
-    #################################################
+            new_transform = (min_output_x, pixel_size_source_x, 0.0, max_output_y, 0.0, pixel_size_source_y)
 
-    xOrigin = geotransform[0]
-    yOrigin = geotransform[3]
-    pixelWidth = geotransform[1]
-    pixelHeight = geotransform[5]
+            output_image = gdal.GetDriverByName('GTiff').Create(output_image_path, output_cols, output_rows, bands=1,
+                                                                eType=gdal.GDT_Int16)
 
-    transform = osr.CoordinateTransformation(in_srs, out_srs)
+            output_image.SetProjection(utm_projection)
+            output_image.SetGeoTransform(new_transform)
 
-    i1j1 = transform.TransformPoint(extent['min_x'], extent['min_y'])
-    i2j2 = transform.TransformPoint(extent['max_x'], extent['max_y'])
+            if source_array.ndim < 3:
+                output_image.GetRasterBand(1).WriteArray(source_array)
 
-    i1 = int((i1j1[0] - xOrigin) / pixelWidth)
-    j1 = int((i1j1[1] - yOrigin) / pixelHeight)
-    i2 = int((i2j2[0] - xOrigin) / pixelWidth)
-    j2 = int((i2j2[1] - yOrigin) / pixelHeight)
-
-    new_cols = i2 - i1 + 1
-    new_rows = j1 - j2 + 1
-
-    data = dataset.ReadAsArray(i1, j2, new_cols, new_rows)
-
-    if numpy.any(data):
-        newX = xOrigin + i1 * pixelWidth
-        newY = yOrigin + j2 * pixelHeight
-
-        new_transform = (newX, pixelWidth, 0.0, newY, 0.0, pixelHeight)
-
-        dst_ds = gdal.GetDriverByName('GTiff').Create(output_image_path, new_cols, new_rows, bands=1,
-                                                      eType=gdal.GDT_Int16)
-
-        dst_ds.SetProjection(UTM_projection)
-        dst_ds.SetGeoTransform(new_transform)
-
-        if data.ndim < 3:
-            dst_ds.GetRasterBand(1).WriteArray(data)
-
-        dst_ds = None
+        output_image = None
         dataset_middle = None
-        dataset = None
-
-    else:
-
-        dst_ds = None
-        dataset_middle = None
-        dataset = None
+        source_image = None
 
 
 def iterate_product(product, order):
@@ -281,31 +276,34 @@ def iterate_product(product, order):
     :param obj order: django.models Order object
     """
 
-    # Creates /orders/order_id/product_id directory if it doesn't exist
-
-
-    if (product.satellite[:2] == 'S1'):
+    if product.satellite[:2] == 'S1':
         # If it's a Sentinel-1 product iterates over *.tiff files in the product_title.safe/measurement directory
         if not os.path.exists(os.path.join(ORDERS_DIR, str(order.pk), product.title)):
             os.makedirs(os.path.join(ORDERS_DIR, str(order.pk), product.title))
 
         for image in os.listdir(os.path.join(TEMP_DIR, product.id, product.title + '.SAFE', 'measurement')):
             if image.endswith('.tiff'):
-                source_image_path = os.path.join(TEMP_DIR, product.id, product.title + '.SAFE', 'measurement', image)
-                output_image_path = os.path.join(ORDERS_DIR, str(order.pk), product.title, image)
 
-                print(source_image_path)
-                print(output_image_path)
-                print(order.extent())
+                filename = os.path.splitext(image)[0]
+                file_attributes = filename.split('-')
+                file_layer = file_attributes[3]
 
-                clip_image_tiff(order.extent(), source_image_path, output_image_path)
+                if file_layer in order.layers:
+                    source_image_path = os.path.join(TEMP_DIR, product.id, product.title + '.SAFE',
+                                                     'measurement', image)
+                    output_image_path = os.path.join(ORDERS_DIR, str(order.pk), product.title, image)
 
-    elif (product.satellite[:2] == 'S2'):
+                    # clip_image_tiff(order.extent(), source_image_path, output_image_path)
+                    clip_image_to_extent(order.extent(), source_image_path, output_image_path)
+
+    elif product.satellite[:2] == 'S2':
         subfolder = os.listdir(os.path.join(TEMP_DIR, product.id, product.title + '.SAFE', 'GRANULE'))
+        # TODO: product.product_type ???
         if product.title[4:10] == 'MSIL2A':
             for sub in subfolder:
 
-                subsubfolder = os.listdir(os.path.join(TEMP_DIR, product.id, product.title + '.SAFE', 'GRANULE', sub, 'IMG_DATA'))
+                subsubfolder = os.listdir(os.path.join(TEMP_DIR, product.id, product.title + '.SAFE',
+                                                       'GRANULE', sub, 'IMG_DATA'))
 
                 for subsub in subsubfolder:
 
@@ -315,24 +313,40 @@ def iterate_product(product, order):
                     if not os.path.exists(os.path.join(ORDERS_DIR, str(order.pk), product.title, sub, subsub)):
                         os.makedirs(os.path.join(ORDERS_DIR, str(order.pk), product.title, sub, subsub))
 
-                    for image in os.listdir(os.path.join(TEMP_DIR, product.id, product.title + '.SAFE', 'GRANULE', sub, 'IMG_DATA', subsub)):
+                    for image in os.listdir(os.path.join(TEMP_DIR, product.id, product.title + '.SAFE',
+                                                         'GRANULE', sub, 'IMG_DATA', subsub)):
                         if image.endswith('.jp2'):
+                            filename = os.path.splitext(image)[0]
+                            file_attributes = filename.split('_')
+                            file_layer = file_attributes[-2] + '_' + file_attributes[-1]
 
-                            # orders/40/S2A_MSIL2A_20180529T101031_N0208_R022_T33UVS_20180529T112942/L2A_T33UVS_A015320_20180529T101225/R20m/T33UVS_20180529T101031_B07_20m/.tiff
+                            if file_layer in order.layers:
+                                source_image_path = os.path.join(TEMP_DIR, product.id, product.title + '.SAFE',
+                                                                 'GRANULE', sub, 'IMG_DATA', subsub, image)
+                                output_image_path = os.path.join(ORDERS_DIR, str(order.pk), product.title,
+                                                                 sub, subsub, image)
 
-                            source_image_path = os.path.join(TEMP_DIR, product.id, product.title + '.SAFE', 'GRANULE', sub, 'IMG_DATA', subsub, image)
-                            output_image_path = os.path.join(ORDERS_DIR, str(order.pk), product.title, sub, subsub, image[:-4])
-                            clip_image_jp2(order.extent(), source_image_path, output_image_path)
+                                # clip_image_jp2(order.extent(), source_image_path, output_image_path)
+                                clip_image_to_extent(order.extent(), source_image_path, output_image_path)
         else:
             for sub in subfolder:
                 if not os.path.exists(os.path.join(ORDERS_DIR, str(order.pk), product.title, sub)):
                     os.makedirs(os.path.join(ORDERS_DIR, str(order.pk), product.title, sub))
 
-                for image in os.listdir(os.path.join(TEMP_DIR, product.id, product.title + '.SAFE', 'GRANULE', sub, 'IMG_DATA')):
+                for image in os.listdir(os.path.join(TEMP_DIR, product.id, product.title + '.SAFE',
+                                                     'GRANULE', sub, 'IMG_DATA')):
                     if image.endswith('.jp2'):
-                        source_image_path = os.path.join(TEMP_DIR, product.id, product.title + '.SAFE', 'GRANULE', sub, 'IMG_DATA', image)
-                        output_image_path = os.path.join(ORDERS_DIR, str(order.pk), product.title, sub, image[:-4])
-                        clip_image_jp2(order.extent(), source_image_path, output_image_path)
+                        filename = os.path.splitext(image)[0]
+                        file_attributes = filename.split('_')
+                        file_layer = file_attributes[-2] + '_' + file_attributes[-1]
+                        if file_layer in order.layers:
+                            source_image_path = os.path.join(TEMP_DIR, product.id, product.title + '.SAFE',
+                                                             'GRANULE', sub, 'IMG_DATA', image)
+                            output_image_path = os.path.join(ORDERS_DIR, str(order.pk), product.title, sub, image)
+
+                            # clip_image_jp2(order.extent(), source_image_path, output_image_path)
+                            clip_image_to_extent(order.extent(), source_image_path, output_image_path)
+
 
 @shared_task
 def perform_order(order_id):
@@ -363,9 +377,6 @@ def perform_order(order_id):
 
     # zip order
     zip_order(order_id)
-
-    # delete order directory
-
 
     # set order status to COMPLETE
     order.completed_date_time = timezone.now()
