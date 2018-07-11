@@ -3,6 +3,12 @@ import datetime
 
 
 class SearchForm(forms.Form):
+    min_sensing_date = forms.DateField(label='Od',
+                                       required=False)
+
+    max_sensing_date = forms.DateField(label='Do',
+                                       required=False)
+
     min_ingestion_date = forms.DateField(label='Od',
                                          required=True,
                                          initial=datetime.datetime.now() - datetime.timedelta(days=7))
@@ -34,7 +40,9 @@ class SearchForm(forms.Form):
                                              label='Typ produktu',
                                              choices=(('GRD', 'GRD'),
                                                       ('SLC', 'SLC'),
-                                                      ('RAW', 'RAW')),
+                                                      ('RAW', 'RAW'),
+                                                      ('S2MSI2A', 'S2MSI2A'),
+                                                      ('S2MSI1C', 'S2MSI1C')),
                                              required=False)
 
     sensor_mode = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
@@ -51,14 +59,14 @@ class SearchForm(forms.Form):
     relative_orbit_number = forms.IntegerField(label='Względny numer orbity',
                                                required=False)
 
-    search_extent_min_x = forms.DecimalField(label='Minimalna długość geograficzna',
+    search_extent_min_x = forms.DecimalField(label='Minimalna długość geograficzna (λ)',
                                              required=False)
 
-    search_extent_max_x = forms.DecimalField(label='Maksymalna długość geograficzna',
+    search_extent_max_x = forms.DecimalField(label='Maksymalna długość geograficzna (λ)',
                                              required=False)
 
-    search_extent_min_y = forms.DecimalField(label='Minimalna szerokość geograficzna',
+    search_extent_min_y = forms.DecimalField(label='Minimalna szerokość geograficzna (φ)',
                                              required=False)
 
-    search_extent_max_y = forms.DecimalField(label='Maksymalna szerokość geograficzna',
+    search_extent_max_y = forms.DecimalField(label='Maksymalna szerokość geograficzna (φ)',
                                              required=False)
