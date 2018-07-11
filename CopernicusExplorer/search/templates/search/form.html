@@ -72,17 +72,16 @@
         });
     </script>
 
-
 {% endblock %}
 
 {% block content %}
 
-<div class="col" id="mapid_">
+<div class="col" id="mapid">
     {% load static %}
     <script src="{% static '/js/search-form-map.js' %}"></script>
 </div>
 
-<div class="col">
+<div class="form">
     <form action="results/" method="post">
         {% csrf_token %}
 
@@ -90,7 +89,246 @@
         {{ form.source.errors }}
         {{ form.source }}
 
-        <table>
+        <div class="row" id="form">
+            <div class="form-row">
+                <div class="form-title">
+                    Zakres czasowy:
+                </div>
+                <div class="form-formbox-row">
+                    <div class="form-title">
+                        Data pomiaru:
+                    </div>
+                    <div class="form-33">
+                        <div class="form-50">
+                            {{ form.min_sensing_date.label_tag }}
+                        </div>
+                        <div class="form-50">
+                            {{ form.min_sensing_date.errors }}
+                            {{ form.min_sensing_date }}
+                            {{ form.min_sensing_date.help_text }}
+                        </div>
+                    </div>
+                    <div class="form-33">
+                        <div class="form-50">
+                            {{ form.max_sensing_date.label_tag }}
+                        </div>
+                        <div class="form-50">
+                            {{ form.max_sensing_date.errors }}
+                            {{ form.max_sensing_date }}
+                            {{ form.max_sensing_date.help_text }}
+                        </div>
+                    </div>
+                    <div class="form-33">
+                        <input type="button" class="button-inline button-highlighted" value="7 dni" onclick="" />
+                        <input type="button" class="button-inline button-highlighted" value="14 dni" onclick="" />
+                        <input type="button" class="button-inline button-highlighted" value="28 dni" onclick="" />
+                        <input type="button" class="button-inline" value="Wyczyść" onclick="" />
+                    </div>
+                </div>
+
+                <div class="form-formbox-row">
+                    <div class="form-title">
+                        Data przyjęcia:
+                    </div>
+                    <div class="form-33">
+                        <div class="form-50">
+                            {{ form.min_ingestion_date.label_tag }}
+                        </div>
+                        <div class="form-50">
+                            {{ form.min_ingestion_date.errors }}
+                            {{ form.min_ingestion_date }}
+                            {{ form.min_ingestion_date.help_text }}
+                        </div>
+                    </div>
+                    <div class="form-33">
+                        <div class="form-50">
+                            {{ form.max_ingestion_date.label_tag }}
+                        </div>
+                        <div class="form-50">
+                            {{ form.max_ingestion_date.errors }}
+                            {{ form.max_ingestion_date }}
+                            {{ form.max_ingestion_date.help_text }}
+                        </div>
+                    </div>
+                    <div class="form-33">
+                        <input type="button" class="button-inline button-highlighted" value="7 dni" onclick="" />
+                        <input type="button" class="button-inline button-highlighted" value="14 dni" onclick="" />
+                        <input type="button" class="button-inline button-highlighted" value="28 dni" onclick="" />
+                        <input type="button" class="button-inline" value="Wyczyść" onclick="" />
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="form-row">
+                <div class="form-title">
+                    Parametry satelity:
+                </div>
+                <div class="form-formbox">
+                    <div class="form-50">
+                        {{ form.satellite.label_tag }}
+                    </div>
+                    <div class="form-50">
+                        <ul id="id_satellite">
+                            <li>
+                                <label for="id_satellite_0">
+                                    <input type="radio" name="satellite" value="S1" required="" id="id_satellite_0">
+                                    S1
+                                </label>
+                            </li>
+                            <li>
+                                <label for="id_satellite_1">
+                                    <input type="radio" name="satellite" value="S2" required="" id="id_satellite_1">
+                                    S2
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="form-formbox">
+                    <div class="form-50">
+                        {{ form.orbit_direction.label_tag }}
+                    </div>
+                    <div class="form-50">
+                        {{ form.orbit_direction.errors }}
+                        {{ form.orbit_direction }}
+                        {{ form.orbit_direction.help_text }}
+                    </div>
+                </div>
+                <div class="form-formbox">
+                    <div class="form-50">
+                        {{ form.relative_orbit_number.label_tag }}
+                    </div>
+                    <div class="form-50">
+                        {{ form.relative_orbit_number.errors }}
+                        {{ form.relative_orbit_number }}
+                        {{ form.relative_orbit_number.help_text }}
+                    </div>
+                </div>
+            </div>
+            <div class="form-row formS1 formS2">
+                <div class="form-title">
+                    Parametry produktu:
+                </div>
+
+                    <div class="form-formbox">
+                    <div class="form-50">
+                        {{ form.product_type.label_tag }}
+                    </div>
+                    <div class="form-50">
+                        <ul>
+                            <li class="formS1">
+                                <label for="id_product_type_0">
+                                    <input type="checkbox" name="product_type" value="GRD" id="id_product_type_0">
+                                    GRD
+                                </label>
+                            </li>
+                            <li class="formS1">
+                                <label for="id_product_type_1">
+                                    <input type="checkbox" name="product_type" value="SLC" id="id_product_type_1">
+                                    SLC
+                                </label>
+                            </li>
+                            <li class="formS1">
+                                <label for="id_product_type_2">
+                                    <input type="checkbox" name="product_type" value="RAW" id="id_product_type_2">
+                                    RAW
+                                </label>
+                            </li>
+                            <li class="formS2">
+                                <label for="id_product_type_3">
+                                    <input type="checkbox" name="product_type" value="S2MSI2A" id="id_product_type_3">
+                                    S2MSI2A
+                                </label>
+                            </li>
+                            <li class="formS2">
+                                <label for="id_product_type_4">
+                                    <input type="checkbox" name="product_type" value="S2MSI1C" id="id_product_type_4">
+                                    S2MSI1C
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                    <div class="form-formbox formS1">
+                    <div class="form-50">
+                        {{ form.sensor_mode.label_tag }}
+                    </div>
+                    <div class="form-50">
+                        {{ form.sensor_mode.errors }}
+                        {{ form.sensor_mode }}
+                        {{ form.sensor_mode.help_text }}
+                    </div>
+                </div>
+
+
+                    <div class="form-formbox formS1">
+                        <div class="form-50">
+                            {{ form.polarisation_mode.label_tag }}
+                        </div>
+                        <div class="form-50">
+                            {{ form.polarisation_mode.errors }}
+                            {{ form.polarisation_mode }}
+                            {{ form.polarisation_mode.help_text }}
+                        </div>
+                    </div>
+                    <div class="form-formbox formS2">
+                        <div class="form-50">
+                            {{ form.cloud_cover.label_tag }}
+                        </div>
+                        <div class="form-50">
+                            {{ form.cloud_cover.errors }}
+                            {{ form.cloud_cover }}
+                            {{ form.cloud_cover.help_text }}
+                        </div>
+                    </div>
+
+
+            </div>
+            <div class="form-row">
+                <div class="form-title">
+                    Zasięg przestrzenny produktu:
+                </div>
+                <div class="form-formbox">
+                    <div class="form-50">{{ form.search_extent_min_x.label_tag }}</div>
+                    <div class="form-50">
+                        {{ form.search_extent_min_x.errors }}
+                        {{ form.search_extent_min_x }}
+                        {{ form.search_extent_min_x.help_text }}
+                    </div>
+                </div>
+                <div class="form-formbox">
+                    <div class="form-50">{{ form.search_extent_max_x.label_tag }}</div>
+                    <div class="form-50">
+                        {{ form.search_extent_max_x.errors }}
+                        {{ form.search_extent_max_x }}
+                        {{ form.search_extent_max_x.help_text }}
+                    </div>
+                </div>
+                <div class="form-formbox">
+                    <div class="form-50">{{ form.search_extent_min_y.label_tag }}</div>
+                    <div class="form-50">
+                        {{ form.search_extent_min_y.errors }}
+                        {{ form.search_extent_min_y }}
+                        {{ form.search_extent_min_y.help_text }}
+                    </div>
+                </div>
+                <div class="form-formbox">
+                    <div class="form-50">{{ form.search_extent_max_y.label_tag }}</div>
+                    <div class="form-50">
+                        {{ form.search_extent_max_y.errors }}
+                        {{ form.search_extent_max_y }}
+                        {{ form.search_extent_max_y.help_text }}
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+
+        {% comment %}
+        <table class="form-table">
             <tr>
                 <th colspan="6">
                     Data pomiaru:
@@ -315,6 +553,7 @@
                 </td>
             </tr>
         </table>
+        {% endcomment %}
 
         {% comment %}
         <table>
