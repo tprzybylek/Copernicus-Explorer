@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'search.apps.SearchConfig',
     'order.apps.OrderConfig',
+    'pages.apps.PagesConfig',
 ]
 
 REST_FRAMEWORK = {
@@ -153,6 +154,7 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'data')
 ]
 
 # Celery application definition
@@ -160,7 +162,11 @@ STATICFILES_DIRS = [
 #
 # Open the terminal and paste following commands:
 #   cd /home/tomasz/PycharmProjects/copernicus-django/CopernicusExplorer
+#
 #   celery -A CopernicusExplorer worker -l info -B
+# or
+#   celery -A CopernicusExplorer worker -l info
+
 # Run the Django project
 
 CELERY_BROKER_URL = 'amqp://localhost//'
@@ -173,10 +179,10 @@ CELERY_IMPORTS = ['search.tasks', 'order.tasks']
 CELERY_BEAT_SCHEDULE = {
     'update_database': {
         'task': 'search.tasks.update_database',
-        'schedule': crontab(minute='*/5'),
+        'schedule': crontab(hour='*/12')
     },
     'rolling_archive': {
         'task': 'search.tasks.rolling_archive',
-        'schedule': crontab(minute='*/5'),
+        'schedule': crontab(hour='*/12'),
     }
 }
