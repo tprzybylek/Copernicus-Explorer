@@ -5,29 +5,32 @@ import os
 import sys
 import shutil
 import zipfile
+import requests
+import json
 
 from django.utils import timezone
 from django.conf import settings
 
 import xml.etree.ElementTree
-import requests
+
 from datetime import datetime
 from datetime import timedelta
 import time
-import json
+
 
 import numpy as np
 
-from osgeo import gdal, gdalnumeric, ogr, osr
+from osgeo import gdal, gdalnumeric, ogr
 from PIL import Image, ImageDraw
 from django.contrib.gis.geos import GEOSGeometry
-from .models import Product
+from .models import Product, AdministrativeUnit
 
 BASE_DIR = settings.BASE_DIR
 TEMP_DIR = os.path.join(BASE_DIR, 'data/temp')
 ORDERS_DIR = os.path.join(BASE_DIR, 'data/orders')
 IMAGERY_DIR = os.path.join(BASE_DIR, 'data/imagery')
 SHP_PATH = os.path.join(BASE_DIR, 'data/shp/PL.shp')
+
 
 @shared_task
 def update_database():
@@ -69,9 +72,9 @@ def update_database():
 
     def size_to_bytes(size):
         if size[-2:] == 'GB':
-            return str(int((float(size[:-3]) * (10 ** 9))))
+            return str(int((float(size[:-3]) * (2 ** 30))))
         elif size[-2:] == 'MB':
-            return str(int((float(size[:-3]) * (10 ** 6))))
+            return str(int((float(size[:-3]) * (2 ** 20))))
         else:
             return None
 
@@ -115,7 +118,9 @@ def update_database():
                 elif attribute.attrib['name'] == 'producttype':
                     product['producttype'] = attribute.text
                 elif attribute.attrib['name'] == 'polarisationmode' and satellite[:2] == 'S1':
-                    product['polarisationmode'] = attribute.text
+
+                    product['polarisationmode'] = attribute.text.split()
+
                 elif attribute.attrib['name'] == 'productclass' and satellite[:2] == 'S1':
                     product['productclass'] = attribute.text
                 elif attribute.attrib['name'] == 'cloudcoverpercentage' and satellite[:2] == 'S2':
@@ -146,6 +151,7 @@ def update_database():
     last_product_time = last_update
 
     while last_update['lastUpdateTimeDifference'] > 3600 * 8:
+        print(last_update['lastUpdateTimeDifference'])
 
         query_uri = 'https://scihub.copernicus.eu/apihub/search?q=ingestiondate:[' + last_update[
             'lastUpdateTime'].isoformat() + 'Z%20TO%20NOW]%20AND%20footprint:%22Intersects(' \
@@ -206,13 +212,13 @@ def update_database():
         print("DB update complete")
 
 
-def download_product(id):
+def download_product(product_id):
     """
     Downloads a Sentinel product from ESA archive and writes it to the hard drive
-    :param str id: Product ID
+    :param str product_id: Product ID
     """
 
-    url = "https://scihub.copernicus.eu/dhus/odata/v1/Products('" + id + "')/$value"
+    url = "https://scihub.copernicus.eu/dhus/odata/v1/Products('" + product_id + "')/$value"
 
     passwords = json.load(open(os.path.join(BASE_DIR, 'passwords.json')))
 
@@ -221,21 +227,21 @@ def download_product(id):
 
     r = requests.get(url, auth=(username, password), stream=True)
     if r.status_code == 200:
-        with open(os.path.join(TEMP_DIR, id + '.zip'), 'wb') as f:
+        with open(os.path.join(TEMP_DIR, product_id + '.zip'), 'wb') as f:
             r.raw.decode_content = True
             shutil.copyfileobj(r.raw, f)
 
     sys.stdout.flush()
 
 
-def unzip_product(id):
+def unzip_product(product_id):
     """
     Unzips the product to /DOWNLOAD_PATH/id/
-    :param str id: Product ID
+    :param str product_id: Product ID
     """
 
-    zip_ref = zipfile.ZipFile(os.path.join(TEMP_DIR, id + '.zip'), 'r')
-    zip_ref.extractall(os.path.join(TEMP_DIR, id))
+    zip_ref = zipfile.ZipFile(os.path.join(TEMP_DIR, product_id + '.zip'), 'r')
+    zip_ref.extractall(os.path.join(TEMP_DIR, product_id))
     zip_ref.close()
 
 
@@ -588,113 +594,100 @@ def clip_image_to_shape(source_image_path, output_image_path):
         print('unknown file format')
 
 
-def zip_product(id, title):
-    """
-    Zips a requested order to the /ORDERS_PATH/order_id.zip file
-    :param str order_id: Order ID
-    """
-
+def zip_product(product_id, title):
     folder_path = os.path.join(TEMP_DIR, title)
-    output_path = os.path.join(IMAGERY_DIR, id + '.zip')
+    output_path = os.path.join(IMAGERY_DIR, product_id + '.zip')
 
     parent_folder = os.path.dirname(folder_path)
 
     contents = os.walk(folder_path)
 
     try:
-        zipFile = zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED)
+        zip_file = zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED)
         for root, folders, files in contents:
             for folder_name in folders:
                 absolute_path = os.path.join(root, folder_name)
                 relative_path = absolute_path.replace(parent_folder + '/', '')
-                zipFile.write(absolute_path, relative_path)
+                zip_file.write(absolute_path, relative_path)
 
             for file_name in files:
                 absolute_path = os.path.join(root, file_name)
                 relative_path = absolute_path.replace(parent_folder + '/', '')
-                zipFile.write(absolute_path, relative_path)
+                zip_file.write(absolute_path, relative_path)
     except IOError:
         sys.exit(1)
     finally:
-        zipFile.close()
+        zip_file.close()
 
     shutil.rmtree(folder_path)
 
 
-def iterate_product(id, title, satellite):
+def iterate_product(product_id, title, satellite):
     """
     Iterates over downloaded product content and calls the clip function for each imagery file (*.tiff or *.jp2).
     """
 
-    if (satellite[:2] == 'S1'):
+    if satellite[:2] == 'S1':
         if not os.path.exists(os.path.join(TEMP_DIR, title)):
             os.makedirs(os.path.join(TEMP_DIR, title))
 
-        for image in os.listdir(os.path.join(TEMP_DIR, id, title + '.SAFE', 'measurement')):
+        for image in os.listdir(os.path.join(TEMP_DIR, product_id, title + '.SAFE', 'measurement')):
             if image.endswith('.tiff'):
-                source_image_path = os.path.join(TEMP_DIR, id, title + '.SAFE', 'measurement', image)
+                source_image_path = os.path.join(TEMP_DIR, product_id, title + '.SAFE', 'measurement', image)
                 output_image_path = os.path.join(TEMP_DIR, title, image)
-
-                print(source_image_path)
-                print(output_image_path)
-                print(image)
 
                 clip_image_to_shape(source_image_path, output_image_path)
 
-        zip_product(id, title)
+        zip_product(product_id, title)
 
-    elif (satellite[:2] == 'S2'):
-        subfolder = os.listdir(os.path.join(TEMP_DIR, id, title + '.SAFE', 'GRANULE'))
+    elif satellite[:2] == 'S2':
+        subfolder = os.listdir(os.path.join(TEMP_DIR, product_id, title + '.SAFE', 'GRANULE'))
         if title[4:10] == 'MSIL2A':
             for sub in subfolder:
-
-                subsubfolder = os.listdir(os.path.join(TEMP_DIR, id, title + '.SAFE', 'GRANULE', sub, 'IMG_DATA'))
-
+                subsubfolder = os.listdir(os.path.join(TEMP_DIR, product_id, title + '.SAFE',
+                                                       'GRANULE', sub, 'IMG_DATA'))
                 for subsub in subsubfolder:
-
                     if not os.path.exists(os.path.join(TEMP_DIR, title, sub, subsub)):
                         os.makedirs(os.path.join(TEMP_DIR, title, sub, subsub))
 
-                    for image in os.listdir(os.path.join(TEMP_DIR, id, title + '.SAFE', 'GRANULE', sub, 'IMG_DATA', subsub)):
+                    for image in os.listdir(os.path.join(TEMP_DIR, product_id, title + '.SAFE',
+                                                         'GRANULE', sub, 'IMG_DATA', subsub)):
                         if image.endswith('.jp2') and image[-11:-9] != 'SCL':
-
-                            # orders/40/S2A_MSIL2A_20180529T101031_N0208_R022_T33UVS_20180529T112942/L2A_T33UVS_A015320_20180529T101225/R20m/T33UVS_20180529T101031_B07_20m/.tiff
-
-                            source_image_path = os.path.join(TEMP_DIR, id, title + '.SAFE', 'GRANULE', sub, 'IMG_DATA', subsub, image)
+                            source_image_path = os.path.join(TEMP_DIR, product_id, title + '.SAFE',
+                                                             'GRANULE', sub, 'IMG_DATA', subsub, image)
                             output_image_path = os.path.join(TEMP_DIR, title, sub, subsub, image)
 
-                            print(source_image_path)
-                            print(output_image_path)
-
                             clip_image_to_shape(source_image_path, output_image_path)
-
-
 
         else:
             for sub in subfolder:
                 if not os.path.exists(os.path.join(TEMP_DIR, title, sub)):
                     os.makedirs(os.path.join(TEMP_DIR, title, sub))
 
-                for image in os.listdir(os.path.join(TEMP_DIR, id, title + '.SAFE', 'GRANULE', sub, 'IMG_DATA')):
+                for image in os.listdir(os.path.join(TEMP_DIR, product_id, title + '.SAFE',
+                                                     'GRANULE', sub, 'IMG_DATA')):
                     if image.endswith('.jp2'):
-                        source_image_path = os.path.join(TEMP_DIR, id, title + '.SAFE', 'GRANULE', sub, 'IMG_DATA', image)
+                        source_image_path = os.path.join(TEMP_DIR, product_id, title + '.SAFE',
+                                                         'GRANULE', sub, 'IMG_DATA', image)
                         output_image_path = os.path.join(TEMP_DIR, title, sub, image)
                         clip_image_to_shape(source_image_path, output_image_path)
 
-        zip_product(id, title)
+        zip_product(product_id, title)
 
 
 @shared_task
 def rolling_archive():
-    # time_range_end = timezone.now()
-    # time_range_start = time_range_end - timedelta(days=14)
+    boundary = AdministrativeUnit.objects.get(unit_name='POLSKA')
+    boundary = boundary.poly[0]
 
     time_range_end = timezone.now()
-    time_range_start = time_range_end - timedelta(hours=6)
+    time_range_start = time_range_end - timedelta(days=14)
+
+    # time_range_end = timezone.now()
+    # time_range_start = time_range_end - timedelta(hours=6)
 
     expired_products = Product.objects.filter(is_downloaded=True,
                                               ingestion_date__lt=time_range_start)
-    print(expired_products)
 
     for product in expired_products:
         shutil.rmtree(os.path.join(BASE_DIR, product.id + '.zip'))
@@ -705,15 +698,28 @@ def rolling_archive():
 
     fresh_products = Product.objects.filter(is_downloaded=False,
                                             ingestion_date__gte=time_range_start,
-                                            product_type='GRD')
-    print(fresh_products)
+                                            product_type='GRD',
+                                            coordinates__coveredby=boundary)
+
+    fresh_products_to_clip = Product.objects.filter(is_downloaded=False,
+                                                    ingestion_date__gte=time_range_start,
+                                                    product_type='GRD',
+                                                    coordinates__overlaps=boundary)
 
     for product in fresh_products:
         download_product(product.id)
         unzip_product(product.id)
 
         shutil.rmtree(os.path.join(TEMP_DIR, product.id + '.zip'))
-        # TODO: iterate_product only if it crosses the border
+
+        product.is_downloaded = True
+        product.save()
+
+    for product in fresh_products_to_clip:
+        download_product(product.id)
+        unzip_product(product.id)
+
+        shutil.rmtree(os.path.join(TEMP_DIR, product.id + '.zip'))
         iterate_product(product.id, product.title, product.satellite)
 
         product.is_downloaded = True
