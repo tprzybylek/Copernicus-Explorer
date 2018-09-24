@@ -23,7 +23,7 @@ import numpy as np
 from osgeo import gdal, gdalnumeric, ogr
 from PIL import Image, ImageDraw
 from django.contrib.gis.geos import GEOSGeometry
-from .models import Product, AdministrativeUnit
+from .models import Product, AdministrativeUnit, UpdateLog
 
 BASE_DIR = settings.BASE_DIR
 TEMP_DIR = os.path.join(BASE_DIR, 'data/temp')
@@ -35,10 +35,17 @@ SHP_PATH = os.path.join(BASE_DIR, 'data/shp/PL.shp')
 @shared_task
 def update_database():
     def get_xml(url):
+
+        print(url)
+
+
         passwords = json.load(open(os.path.join(BASE_DIR, 'passwords.json')))
 
         r = requests.get(url, auth=(passwords['scihub']['user'], passwords['scihub']['password']))
         e = xml.etree.ElementTree.fromstring(r.content)
+
+
+        print(e)
         return e
 
     def get_last_update():
@@ -106,7 +113,7 @@ def update_database():
                     except ValueError:
                         product['sensingdate'] = datetime.strptime(attribute.text, '%Y-%m-%dT%H:%M:%SZ')
                 elif attribute.attrib['name'] == 'footprint':
-                    feature['geometry']['coordinates'] = attribute.text
+                    feature['geometry']['coordinates'] = GEOSGeometry(attribute.text, srid=4326)
                 elif attribute.attrib['name'] == 'orbitnumber':
                     product['orbitnumber'] = attribute.text
                 elif attribute.attrib['name'] == 'relativeorbitnumber':
@@ -143,18 +150,26 @@ def update_database():
         if len(product['producttype']) > 8:
             product['producttype'] = product['producttype'][:8]
 
+        if feature['geometry']['coordinates'].geom_typeid == 6:
+            feature['geometry']['coordinates'] = feature['geometry']['coordinates'][0]
+
         product['isdownloaded'] = False
         return product
 
-    last_update = get_last_update()
+    # last_update = get_last_update()
 
-    last_product_time = last_update
+    last_product_time = UpdateLog.objects.latest('log_date').log_date
+    last_update_timediff = timezone.now() - last_product_time
+    last_update_timediff = last_update_timediff.total_seconds()
 
-    while last_update['lastUpdateTimeDifference'] > 3600 * 8:
-        print(last_update['lastUpdateTimeDifference'])
+    print(last_update_timediff)
 
-        query_uri = 'https://scihub.copernicus.eu/apihub/search?q=ingestiondate:[' + last_update[
-            'lastUpdateTime'].isoformat() + 'Z%20TO%20NOW]%20AND%20footprint:%22Intersects(' \
+    temp_datetime = last_product_time
+
+    while last_update_timediff > 3600 * 8:
+        query_uri = 'https://scihub.copernicus.eu/apihub/search?q=ingestiondate:[' \
+                    + last_product_time.replace(tzinfo=None).isoformat() \
+                    + 'Z%20TO%20NOW]%20AND%20footprint:%22Intersects(' \
                                             'POLYGON((14.17%2054.14,18.19%2055.00,' \
                                             '23.69%2054.35,24.26%2050.50,' \
                                             '23.00%20 49.00,19.00%20 49.18,' \
@@ -196,18 +211,28 @@ def update_database():
                 product_type=feature['properties']['producttype'],
                 relative_orbit_number=feature['properties']['relativeorbitnumber'],
                 size=size_to_bytes(feature['properties']['size']),
-                coordinates=GEOSGeometry(feature['geometry']['coordinates'], srid=4326),
+                coordinates=feature['geometry']['coordinates'],
                 sensing_date=feature['properties']['sensingdate'],
                 is_downloaded=feature['properties']['isdownloaded'],
             )
 
             new_product.save()
 
-        write_update_time('200', last_product_time)
+        # write_update_time('200', last_product_time)
+        # new_update_time = datetime.strptime(last_product_time, '%Y-%m-%d %H:%M:%S.%f')
+        last_product_time = last_product_time + timedelta(milliseconds=1)
+        new_status = 1
+
+        new_log_entry = UpdateLog.objects.create(log_date=last_product_time, status=new_status)
+        new_log_entry.save()
+
         print('Waiting 15 secs')
         time.sleep(15)
 
-        last_update = get_last_update()
+        last_update_timediff = timezone.now() - last_product_time.replace(tzinfo=timezone.utc)
+        last_update_timediff = last_update_timediff.total_seconds()
+
+        print(last_update_timediff)
     else:
         print("DB update complete")
 

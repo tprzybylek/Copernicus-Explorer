@@ -136,7 +136,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'CET'
+# TIME_ZONE = 'CET'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -166,8 +167,13 @@ STATICFILES_DIRS = [
 #   celery -A CopernicusExplorer worker -l info -B
 # or
 #   celery -A CopernicusExplorer worker -l info
-
-# Run the Django project
+#
+# Run the Django project:
+#   cd /home/tomasz/PycharmProjects/copernicus-django/CopernicusExplorer/
+#   python3 manage.py shell
+# eg.:
+#   >>> from search.tasks import update_database
+#   >>> update_database.async_apply()
 
 CELERY_BROKER_URL = 'amqp://localhost//'
 CELERY_ACCEPT_CONTENT = ['application/json']

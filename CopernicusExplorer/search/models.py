@@ -35,3 +35,7 @@ class AdministrativeUnit(models.Model):
 
     def __str__(self):
         return self.unit_name
+
+class UpdateLog(models.Model):
+    log_date = models.DateTimeField()
+    status = models.SmallIntegerField()
