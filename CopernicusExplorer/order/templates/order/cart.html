@@ -129,224 +129,225 @@
                 {{ form.non_field_errors }}
                 {{ form.source.errors }}
                 {{ form.source }}
-            <div class="form-row">
-            <div class="form-title">
-                {{ form.layers.label_tag }}
-            </div>
-            {% if cart_type == 'S1' %}
-                <ul id="id_layers">
-                <li>
-                    <label for="id_layers_0">
-                        <input type="checkbox" name="layers" value="hh" id="id_layers_0">
-                        HH
-                    </label>
-                </li>
-                <li>
-                    <label for="id_layers_1">
-                        <input type="checkbox" name="layers" value="hv" id="id_layers_1">
-                        HV
-                    </label>
-                </li>
-                <li>
-                    <label for="id_layers_2">
-                        <input type="checkbox" name="layers" value="vh" id="id_layers_2">
-                        VH
-                    </label>
-                </li>
-                <li>
-                    <label for="id_layers_3">
-                        <input type="checkbox" name="layers" value="vv" id="id_layers_3">
-                        VV
-                    </label>
-                </li>
-            </ul>
-            {% elif cart_type == 'S2' %}
-                <div class="form-formbox">
-                    <input type="button" class="button-inline" value="Wszystko" onclick="selectBands('order')" />
-                    <input type="button" class="button-inline" value="Wyczyść" onclick="deselectBands()" />
-                    <input type="button" class="button-inline button-highlighted" value="Rolnictwo" onclick="selectBands('agriculture')" />
-                    <input type="button" class="button-inline button-highlighted" value="Leśnictwo" onclick="selectBands('forestry')" />
-                    <input type="button" class="button-inline button-highlighted" value="Hydrologia" onclick="selectBands('hydrology')" />
-                </div>
                 <div class="form-row">
-                    <ul class="form-inline" id="id_layers" >
-                <div class="form-title">
-                Rozdzielczość 10m:
+                    <div class="form-title">
+                        {{ form.layers.label_tag }}
+                    </div>
+                {% if cart_type == 'S1' %}
+                    <ul id="id_layers">
+                    <li>
+                        <label for="id_layers_0">
+                            <input type="checkbox" name="layers" value="hh" id="id_layers_0">
+                            HH
+                        </label>
+                    </li>
+                    <li>
+                        <label for="id_layers_1">
+                            <input type="checkbox" name="layers" value="hv" id="id_layers_1">
+                            HV
+                        </label>
+                    </li>
+                    <li>
+                        <label for="id_layers_2">
+                            <input type="checkbox" name="layers" value="vh" id="id_layers_2">
+                            VH
+                        </label>
+                    </li>
+                    <li>
+                        <label for="id_layers_3">
+                            <input type="checkbox" name="layers" value="vv" id="id_layers_3">
+                            VV
+                        </label>
+                    </li>
+                </ul>
+                {% elif cart_type == 'S2' %}
+                    <div class="form-formbox">
+                        <input type="button" class="button-inline" value="Wszystko" onclick="selectBands('order')" />
+                        <input type="button" class="button-inline" value="Wyczyść" onclick="deselectBands()" />
+                        <input type="button" class="button-inline button-highlighted" value="Rolnictwo" onclick="selectBands('agriculture')" />
+                        <input type="button" class="button-inline button-highlighted" value="Leśnictwo" onclick="selectBands('forestry')" />
+                        <input type="button" class="button-inline button-highlighted" value="Hydrologia" onclick="selectBands('hydrology')" />
+                    </div>
+                    <div class="form-row">
+                        <ul class="form-inline" id="id_layers" >
+                    <div class="form-title">
+                    Rozdzielczość 10m:
+                    </div>
+
+                    <li>
+                        <label for="id_layers_4">
+                            <input type="checkbox" name="layers" value="B02_10m" class="order hydrology" id="id_layers_4">
+                            B2
+                        </label>
+                    </li>
+                    <li>
+                        <label for="id_layers_5">
+                            <input type="checkbox" name="layers" value="B03_10m" class="order hydrology" id="id_layers_5">
+                            B3
+                        </label>
+                    </li>
+                    <li>
+                        <label for="id_layers_6">
+                            <input type="checkbox" name="layers" value="B04_10m" class="order" id="id_layers_6">
+                            B4
+                        </label>
+                    </li>
+                    <li>
+                        <label for="id_layers_7">
+                            <input type="checkbox" name="layers" value="B08_10m" class="order forestry hydrology" id="id_layers_7">
+                            B8
+                        </label>
+                    </li>
+
+                    <div class="form-title">
+                        Rozdzielczość 20m:
+                    </div>
+
+                    <li>
+                        <label for="id_layers_8">
+                            <input type="checkbox" name="layers" value="B02_20m" class="order" id="id_layers_8">
+                            B2
+                        </label>
+                    </li>
+                    <li>
+                        <label for="id_layers_9">
+                            <input type="checkbox" name="layers" value="B03_20m" class="order" id="id_layers_9">
+                            B3
+                        </label>
+                    </li>
+                    <li>
+                        <label for="id_layers_10">
+                            <input type="checkbox" name="layers" value="B04_20m" class="order agriculture forestry" id="id_layers_10">
+                            B4
+                        </label>
+                    </li>
+                    <li>
+                        <label for="id_layers_11">
+                            <input type="checkbox" name="layers" value="B05_20m" class="order forestry" id="id_layers_11">
+                            B5
+                        </label>
+                    </li>
+
+                    <li>
+                        <label for="id_layers_12">
+                            <input type="checkbox" name="layers" value="B06_20m" class="order forestry" id="id_layers_12">
+                            B6
+                        </label>
+                    </li>
+                    <li>
+                        <label for="id_layers_13">
+                            <input type="checkbox" name="layers" value="B07_20m" class="order" id="id_layers_13">
+                            B7
+                        </label>
+                    </li>
+                    <li>
+                        <label for="id_layers_14">
+                            <input type="checkbox" name="layers" value="B8A_20m" class="order agriculture" id="id_layers_14">
+                            B8A
+                        </label>
+                    </li>
+                    <li>
+                        <label for="id_layers_15">
+                            <input type="checkbox" name="layers" value="B11_20m" class="order agriculture" id="id_layers_15">
+                            B11
+                        </label>
+                    </li>
+                    <li>
+                        <label for="id_layers_16">
+                            <input type="checkbox" name="layers" value="B12_20m" class="order" id="id_layers_16">
+                            B12
+                        </label>
+                    </li>
+
+
+                    <div class="form-title">
+                        Rozdzielczość 60m:
+                    </div>
+
+                    <li>
+                        <label for="id_layers_17">
+                            <input type="checkbox" name="layers" value="B01_60m" class="order" id="id_layers_17">
+                            B1
+                        </label>
+                    </li>
+                    <li>
+                        <label for="id_layers_18">
+                            <input type="checkbox" name="layers" value="B02_60m" class="order" id="id_layers_18">
+                            B2
+                        </label>
+                    </li>
+                    <li>
+                        <label for="id_layers_19">
+                            <input type="checkbox" name="layers" value="B03_60m" class="order" id="id_layers_19">
+                            B3
+                        </label>
+                    </li>
+                    <li>
+                        <label for="id_layers_20">
+                            <input type="checkbox" name="layers" value="B04_60m" class="order" id="id_layers_20">
+                            B4
+                        </label>
+                    </li>
+                    <li>
+                        <label for="id_layers_21">
+                            <input type="checkbox" name="layers" value="B05_60m" class="order" id="id_layers_21">
+                            B5
+                        </label>
+                    </li>
+                    <li>
+                        <label for="id_layers_22">
+                            <input type="checkbox" name="layers" value="B06_60m" class="order" id="id_layers_22">
+                            B6
+                        </label>
+                    </li>
+                    <li>
+                        <label for="id_layers_23">
+                            <input type="checkbox" name="layers" value="B07_60m" class="order" id="id_layers_23">
+                            B7
+                        </label>
+                    </li>
+                    <li>
+                        <label for="id_layers_24">
+                            <input type="checkbox" name="layers" value="B8A_60m" class="order" id="id_layers_24">
+                            B8A
+                        </label>
+                    </li>
+                    <li>
+                        <label for="id_layers_25">
+                            <input type="checkbox" name="layers" value="B09_60m" class="order" id="id_layers_25">
+                            B09
+                        </label>
+                    </li>
+                    <li>
+                        <label for="id_layers_26">
+                            <input type="checkbox" name="layers" value="B11_60m" class="order" id="id_layers_26">
+                            B11
+                        </label>
+                    </li>
+                    <li>
+                        <label for="id_layers_27">
+                            <input type="checkbox" name="layers" value="B12_60m" class="order" id="id_layers_27">
+                            B12
+                        </label>
+                    </li>
+                </ul>
+                    </div>
+                {% endif %}
                 </div>
 
-                <li>
-                    <label for="id_layers_4">
-                        <input type="checkbox" name="layers" value="B02_10m" class="order hydrology" id="id_layers_4">
-                        B2
-                    </label>
-                </li>
-                <li>
-                    <label for="id_layers_5">
-                        <input type="checkbox" name="layers" value="B03_10m" class="order hydrology" id="id_layers_5">
-                        B3
-                    </label>
-                </li>
-                <li>
-                    <label for="id_layers_6">
-                        <input type="checkbox" name="layers" value="B04_10m" class="order" id="id_layers_6">
-                        B4
-                    </label>
-                </li>
-                <li>
-                    <label for="id_layers_7">
-                        <input type="checkbox" name="layers" value="B08_10m" class="order forestry hydrology" id="id_layers_7">
-                        B8
-                    </label>
-                </li>
+                <div class="form-row">
+                    <div class="form-title">
+                    {{ form.e_mail.label_tag }}
+                    </div>
 
-                <div class="form-title">
-                    Rozdzielczość 20m:
+                    {{ form.e_mail.errors }}
+                    {{ form.e_mail }}
+                    {{ form.e_mail.help_text }}
                 </div>
 
-                <li>
-                    <label for="id_layers_8">
-                        <input type="checkbox" name="layers" value="B02_20m" class="order" id="id_layers_8">
-                        B2
-                    </label>
-                </li>
-                <li>
-                    <label for="id_layers_9">
-                        <input type="checkbox" name="layers" value="B03_20m" class="order" id="id_layers_9">
-                        B3
-                    </label>
-                </li>
-                <li>
-                    <label for="id_layers_10">
-                        <input type="checkbox" name="layers" value="B04_20m" class="order agriculture forestry" id="id_layers_10">
-                        B4
-                    </label>
-                </li>
-                <li>
-                    <label for="id_layers_11">
-                        <input type="checkbox" name="layers" value="B05_20m" class="order forestry" id="id_layers_11">
-                        B5
-                    </label>
-                </li>
-
-                <li>
-                    <label for="id_layers_12">
-                        <input type="checkbox" name="layers" value="B06_20m" class="order forestry" id="id_layers_12">
-                        B6
-                    </label>
-                </li>
-                <li>
-                    <label for="id_layers_13">
-                        <input type="checkbox" name="layers" value="B07_20m" class="order" id="id_layers_13">
-                        B7
-                    </label>
-                </li>
-                <li>
-                    <label for="id_layers_14">
-                        <input type="checkbox" name="layers" value="B8A_20m" class="order agriculture" id="id_layers_14">
-                        B8A
-                    </label>
-                </li>
-                <li>
-                    <label for="id_layers_15">
-                        <input type="checkbox" name="layers" value="B11_20m" class="order agriculture" id="id_layers_15">
-                        B11
-                    </label>
-                </li>
-                <li>
-                    <label for="id_layers_16">
-                        <input type="checkbox" name="layers" value="B12_20m" class="order" id="id_layers_16">
-                        B12
-                    </label>
-                </li>
-
-
-                <div class="form-title">
-                    Rozdzielczość 60m:
-                </div>
-
-                <li>
-                    <label for="id_layers_17">
-                        <input type="checkbox" name="layers" value="B01_60m" class="order" id="id_layers_17">
-                        B1
-                    </label>
-                </li>
-                <li>
-                    <label for="id_layers_18">
-                        <input type="checkbox" name="layers" value="B02_60m" class="order" id="id_layers_18">
-                        B2
-                    </label>
-                </li>
-                <li>
-                    <label for="id_layers_19">
-                        <input type="checkbox" name="layers" value="B03_60m" class="order" id="id_layers_19">
-                        B3
-                    </label>
-                </li>
-                <li>
-                    <label for="id_layers_20">
-                        <input type="checkbox" name="layers" value="B04_60m" class="order" id="id_layers_20">
-                        B4
-                    </label>
-                </li>
-                <li>
-                    <label for="id_layers_21">
-                        <input type="checkbox" name="layers" value="B05_60m" class="order" id="id_layers_21">
-                        B5
-                    </label>
-                </li>
-                <li>
-                    <label for="id_layers_22">
-                        <input type="checkbox" name="layers" value="B06_60m" class="order" id="id_layers_22">
-                        B6
-                    </label>
-                </li>
-                <li>
-                    <label for="id_layers_23">
-                        <input type="checkbox" name="layers" value="B07_60m" class="order" id="id_layers_23">
-                        B7
-                    </label>
-                </li>
-                <li>
-                    <label for="id_layers_24">
-                        <input type="checkbox" name="layers" value="B8A_60m" class="order" id="id_layers_24">
-                        B8A
-                    </label>
-                </li>
-                <li>
-                    <label for="id_layers_25">
-                        <input type="checkbox" name="layers" value="B09_60m" class="order" id="id_layers_25">
-                        B09
-                    </label>
-                </li>
-                <li>
-                    <label for="id_layers_26">
-                        <input type="checkbox" name="layers" value="B11_60m" class="order" id="id_layers_26">
-                        B11
-                    </label>
-                </li>
-                <li>
-                    <label for="id_layers_27">
-                        <input type="checkbox" name="layers" value="B12_60m" class="order" id="id_layers_27">
-                        B12
-                    </label>
-                </li>
-            </ul>
-                </div>
-            {% endif %}
-            </div>
-            <div class="form-row">
-                <div class="form-title">
-                {{ form.e_mail.label_tag }}
-                </div>
-
-                {{ form.e_mail.errors }}
-                {{ form.e_mail }}
-                {{ form.e_mail.help_text }}
-            </div>
+            <input type="submit" class="button button-highlighted" value="Złóż zamówienie" />
             </form>
         </div>
-            <input type="submit" class="button button-highlighted" value="Złóż zamówienie" />
-        </form>
     </div>
 
 {% endblock %}
