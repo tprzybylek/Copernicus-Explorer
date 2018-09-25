@@ -35,47 +35,10 @@ SHP_PATH = os.path.join(BASE_DIR, 'data/shp/PL.shp')
 @shared_task
 def update_database():
     def get_xml(url):
-
-        print(url)
-
-
         passwords = json.load(open(os.path.join(BASE_DIR, 'passwords.json')))
-
         r = requests.get(url, auth=(passwords['scihub']['user'], passwords['scihub']['password']))
         e = xml.etree.ElementTree.fromstring(r.content)
-
-
-        print(e)
         return e
-
-    def get_last_update():
-        f = open(os.path.join(BASE_DIR, 'search/update_database.log'), 'r')
-        log = f.readlines()
-        last_line = log[-1]
-
-        print("Got last product time:", last_line[:23])
-
-        last_update_time = datetime.strptime(last_line[:23], '%Y-%m-%d %H:%M:%S.%f')
-        last_update_status = last_line[-3:]
-        last_update_time_difference = datetime.now() - last_update_time
-        f.close()
-
-        return {'lastUpdateTime': last_update_time,
-                'lastUpdateStatus': last_update_status,
-                'lastUpdateTimeDifference':
-                    (last_update_time_difference.microseconds +
-                     (last_update_time_difference.seconds +
-                      last_update_time_difference.days * 24 * 3600) * 10 ** 6) / 10 ** 6
-                }
-
-    def write_update_time(status, last_product_time):
-        f = open(os.path.join(BASE_DIR, 'search/update_database.log'), 'a')
-        last_product_time = last_product_time + timedelta(milliseconds=1)
-        f.write(last_product_time.__format__('%Y-%m-%d %H:%M:%S.%f')
-                + ' ' + status + '\n')
-        f.close()
-        print("Writing last product time:",
-              last_product_time.__format__('%Y-%m-%d %H:%M:%S.%f'))
 
     def size_to_bytes(size):
         if size[-2:] == 'GB':
@@ -156,15 +119,11 @@ def update_database():
         product['isdownloaded'] = False
         return product
 
-    # last_update = get_last_update()
-
     last_product_time = UpdateLog.objects.latest('log_date').log_date
     last_update_timediff = timezone.now() - last_product_time
     last_update_timediff = last_update_timediff.total_seconds()
 
     print(last_update_timediff)
-
-    temp_datetime = last_product_time
 
     while last_update_timediff > 3600 * 8:
         query_uri = 'https://scihub.copernicus.eu/apihub/search?q=ingestiondate:[' \
@@ -218,8 +177,6 @@ def update_database():
 
             new_product.save()
 
-        # write_update_time('200', last_product_time)
-        # new_update_time = datetime.strptime(last_product_time, '%Y-%m-%d %H:%M:%S.%f')
         last_product_time = last_product_time + timedelta(milliseconds=1)
         new_status = 1
 
