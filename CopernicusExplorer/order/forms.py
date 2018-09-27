@@ -1,4 +1,5 @@
 from django import forms
+from captcha.fields import CaptchaField
 
 
 class OrderForm(forms.Form):
@@ -23,3 +24,4 @@ class OrderForm(forms.Form):
                                                 ('B09_60m', '60m B9'),
                                                 ('B10_60m', '60m B10')),
                                        required=False)
+    captcha = CaptchaField()

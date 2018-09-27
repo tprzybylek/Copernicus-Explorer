@@ -403,6 +403,19 @@
 
 
             </div>
+            <div class="form-row">
+                <div class="form-title">
+                    {{ form.captcha.label_tag }}
+                </div>
+                <div class="form-formbox">
+                    <div class="form-50">Przepisz tekst z obrazka:</div>
+                    <div class="form-50">
+                        {{ form.captcha.errors }}
+                        {{ form.captcha }}
+                        {{ form.captcha.help_text }}
+                    </div>
+                </div>
+            </div>
         </div>
         <input type="button" class="button" onclick="resetForm('#search_form')" value="Wyczyść formularz" />
         <input type="submit" class="button button-highlighted" value="Szukaj" />

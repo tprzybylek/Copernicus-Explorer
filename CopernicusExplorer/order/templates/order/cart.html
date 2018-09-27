@@ -344,6 +344,15 @@
                     {{ form.e_mail }}
                     {{ form.e_mail.help_text }}
                 </div>
+                <div class="form-row">
+                    <div class="form-title">
+                    {{ form.captcha.label_tag }}
+                    </div>
+
+                    {{ form.captcha.errors }}
+                    {{ form.captcha }}
+                    {{ form.captcha.help_text }}
+                </div>
 
             <input type="submit" class="button button-highlighted" value="Złóż zamówienie" />
             </form>
