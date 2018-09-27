@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'search.apps.SearchConfig',
     'order.apps.OrderConfig',
     'pages.apps.PagesConfig',
+    'captcha',
 ]
 
 REST_FRAMEWORK = {
