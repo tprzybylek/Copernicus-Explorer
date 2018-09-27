@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -26,4 +26,5 @@ urlpatterns = [
     path('search/', include('search.urls')),
     path('order/', include('order.urls')),
     path('pages/', include('pages.urls')),
+    re_path(r'^captcha/', include('captcha.urls')),
 ] + staticfiles_urlpatterns()
