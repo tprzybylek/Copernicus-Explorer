@@ -2,7 +2,7 @@ import os
 from wsgiref.util import FileWrapper
 
 # Django
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.gis.geos import Polygon
 
 from django.conf import settings
@@ -121,6 +121,5 @@ def results(request):
                                    'results': results,
                                    'results_geom': results_geom,
                                    'search_extent': search_extent_js})
-    else:
-        form = SearchForm()
-    return render(request, 'search/form.html', {'form': form})
+        else:
+            return redirect('search_form')
