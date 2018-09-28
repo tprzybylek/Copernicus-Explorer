@@ -2,7 +2,7 @@ import os
 from wsgiref.util import FileWrapper
 
 # Django
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, FileResponse
 from django.utils import timezone
 from django.contrib.gis.geos import GEOSGeometry
@@ -126,7 +126,9 @@ def order_confirm(request):
                 o.save()
 
             perform_order.delay(order['id'])
-    return render(request, 'order/confirm.html', {'order': order})
+            return render(request, 'order/confirm.html', {'order': order})
+        else:
+            return redirect('cart_show_all')
 
 
 def order_detail(request, order_id):

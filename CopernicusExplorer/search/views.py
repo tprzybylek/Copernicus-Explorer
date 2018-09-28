@@ -121,3 +121,6 @@ def results(request):
                                    'results': results,
                                    'results_geom': results_geom,
                                    'search_extent': search_extent_js})
+    else:
+        form = SearchForm()
+    return render(request, 'search/form.html', {'form': form})
