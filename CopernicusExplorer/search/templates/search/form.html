@@ -52,25 +52,6 @@
     <script src="{% static '/js/leaflet.draw/edit/handler/Edit.Circle.js' %}"></script>
 
     <script>
-        $(document).ready(function(){
-            $('.formS1').hide()
-            $('.formS2').hide()
-
-            $('#id_satellite').change(function(){
-                selected_value = $("input[name='satellite']:checked").val();
-
-                if (selected_value=='S1') {
-                    $('.formS2').hide()
-                    $('.formS1').show()
-                    console.log('S1')
-                } else if (selected_value=='S2') {
-                    $('.formS1').hide()
-                    $('.formS2').show()
-                    console.log('S2')
-                };
-            });
-        });
-
         function resetForm(formID) {
             $(':input', formID)
             .not(':button, :submit, :reset, :hidden')
@@ -148,6 +129,81 @@
 
             $('#id_max_sensing_date').val(todayFormatted);
         }
+
+        $(document).ready(function(){
+            if ($("input[name='satellite']:checked").val() == 'S1') {
+                console.log('S1 is selected')
+                $('.formS2').hide()
+
+                /* clear S2 form */
+                $("#id_product_type_3").prop('checked', false);
+                $("#id_product_type_4").prop('checked', false);
+                $("#id_cloud_cover").val('');
+
+                $('.formS1').show()
+
+            } else if ($("input[name='satellite']:checked").val() == 'S2') {
+                console.log('S2 is selected')
+                $('.formS1').hide()
+
+                /* clear S1 form */
+                $("#id_product_type_0").prop('checked', false);
+                $("#id_product_type_1").prop('checked', false);
+                $("#id_product_type_2").prop('checked', false);
+
+                $("#id_sensor_mode_0").prop('checked', false);
+                $("#id_sensor_mode_1").prop('checked', false);
+                $("#id_sensor_mode_2").prop('checked', false);
+                $("#id_sensor_mode_3").prop('checked', false);
+
+                $("#id_polarisation_mode_0").prop('checked', false);
+                $("#id_polarisation_mode_1").prop('checked', false);
+                $("#id_polarisation_mode_2").prop('checked', false);
+                $("#id_polarisation_mode_3").prop('checked', false);
+
+                $('.formS2').show()
+            } else {
+                console.log('S is not selected')
+                $('.formS1').hide()
+                $('.formS2').hide()
+            }
+
+            $('#id_satellite').change(function(){
+                selected_value = $("input[name='satellite']:checked").val();
+
+                if (selected_value=='S1') {
+                    $('.formS2').hide()
+
+                     /* clear S2 form */
+                    $("#id_product_type_3").prop('checked', false);
+                    $("#id_product_type_4").prop('checked', false);
+                    $("#id_cloud_cover").val('');
+
+                    $('.formS1').show()
+                    console.log('S1 is selected now')
+                } else if (selected_value=='S2') {
+                    $('.formS1').hide()
+                    
+                    /* clear S1 form */
+                    $("#id_product_type_0").prop('checked', false);
+                    $("#id_product_type_1").prop('checked', false);
+                    $("#id_product_type_2").prop('checked', false);
+
+                    $("#id_sensor_mode_0").prop('checked', false);
+                    $("#id_sensor_mode_1").prop('checked', false);
+                    $("#id_sensor_mode_2").prop('checked', false);
+                    $("#id_sensor_mode_3").prop('checked', false);
+
+                    $("#id_polarisation_mode_0").prop('checked', false);
+                    $("#id_polarisation_mode_1").prop('checked', false);
+                    $("#id_polarisation_mode_2").prop('checked', false);
+                    $("#id_polarisation_mode_3").prop('checked', false);
+
+                    $('.formS2').show()
+                    console.log('S2 is selected now')
+                };
+            });
+        });
     </script>
 
 {% endblock %}

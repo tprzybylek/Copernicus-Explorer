@@ -1,5 +1,4 @@
 from django import forms
-from captcha.fields import CaptchaField
 import datetime
 
 
@@ -71,3 +70,23 @@ class SearchForm(forms.Form):
 
     search_extent_max_y = forms.DecimalField(label='Maksymalna szerokość geograficzna (φ)',
                                              required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        satellite = cleaned_data.get('satellite')
+
+        product_type = set(cleaned_data.get('product_type'))
+        cloud_cover = cleaned_data.get('cloud_cover')
+        polarisation_mode = set(cleaned_data.get('polarisation_mode'))
+        sensor_mode = set(cleaned_data.get('sensor_mode'))
+
+        s1_product_type = {'GRD', 'SLC', 'RAW'}
+        s2_product_type = {'S2MSI2A', 'S2MSI2A'}
+
+        if satellite == 'S1' and (product_type.intersection(s2_product_type) or
+                                  cloud_cover is not None):
+            raise forms.ValidationError("Wybrano satelitę S1 jednak otrzymano atrybuty S2")
+        elif satellite == 'S2' and (product_type.intersection(s1_product_type) is not None
+                                    or polarisation_mode is not None
+                                    or sensor_mode is not None):
+            raise forms.ValidationError("Wybrano satelitę S2 jednak otrzymano atrybuty S1")
