@@ -11,6 +11,22 @@
     <script src="{% static '/js/leaflet/leaflet.js' %}"></script>
     <script src="{% static '/js/jquery-3.3.1.min.js' %}"></script>
 
+    <script>
+        $(document).ready(function(){
+            $.ajax({
+                url: "{% url 'cart_get_length' %}",
+                cache: true,
+                //beforeSend: function(request) {
+                //    request.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                //},
+                })
+                .done(function(count) {
+                    $('#cartItemsCount').text(count);
+                    console.log(count);
+                });
+        });
+    </script>
+
     {% block scripts %}
     {% endblock %}
 
@@ -25,7 +41,7 @@
             <img class="logo" src="{% static 'images/logow.png' %}"/>
 
         <ul>
-            <li><a href="{% url 'cart_show_all' %}">Koszyk</a></li>
+            <li><a href="{% url 'cart_show_all' %}">Koszyk (<span id="cartItemsCount"></span>)</a></li>
             <li><a href="{% url 'pages_about' %}">O stronie</a></li>
             <li><a href="{% url 'pages_help' %}">Pomoc</a></li>
             <li><a href="{% url 'search_form' %}">Strona główna</a></li>

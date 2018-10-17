@@ -41,6 +41,9 @@ def cart_empty(request):
     cart.empty()
     return HttpResponse("")
 
+def cart_get_length(request):
+    items_count = len(Cart(request))
+    return HttpResponse(items_count)
 
 def cart_show_all(request):
     form = OrderForm()
