@@ -50,15 +50,15 @@ def results(request):
         if f['orbit_direction']:
             r = r.filter(orbit_direction__in=f['orbit_direction'])
 
-        # TODO polarisation_mode
         if f['polarisation_mode']:
-            r = r.filter(polarisation_mode__in=f['polarisation_mode'])
+            print(f['polarisation_mode'])
+            r = r.filter(polarisation_mode__contains=f['polarisation_mode'])
 
         if f['product_type']:
             r = r.filter(product_type__in=f['product_type'])
 
         if f['sensor_mode']:
-            r = r.filter(sensor_mode__in=f['sensor_mode'])
+            r = r.filter(mode__in=f['sensor_mode'])
 
         if f['relative_orbit_number'] is not None:
             r = r.filter(relative_orbit_number=f['relative_orbit_number'])
