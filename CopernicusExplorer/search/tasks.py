@@ -10,6 +10,7 @@ import json
 
 from django.utils import timezone
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 
 import xml.etree.ElementTree
 
@@ -119,7 +120,11 @@ def update_database():
         product['isdownloaded'] = False
         return product
 
-    last_product_time = UpdateLog.objects.latest('log_date').log_date
+    try:
+        last_product_time = UpdateLog.objects.latest('log_date').log_date
+    except ObjectDoesNotExist:
+        last_product_time = settings.ARCHIVE_STARTING_DATE
+
     last_update_timediff = timezone.now() - last_product_time
     last_update_timediff = last_update_timediff.total_seconds()
 
@@ -214,6 +219,9 @@ def download_product(product_id):
 
     r = requests.get(url, auth=(username, password), stream=True)
     if r.status_code == 200:
+        if os.path.exists(TEMP_DIR) == False:
+            os.makedirs(TEMP_DIR)
+
         with open(os.path.join(TEMP_DIR, product_id + '.zip'), 'wb') as f:
             r.raw.decode_content = True
             shutil.copyfileobj(r.raw, f)
@@ -223,9 +231,12 @@ def download_product(product_id):
 
 def unzip_product(product_id):
     """
-    Unzips the product to /DOWNLOAD_PATH/id/
+    Unzips the product to /TEMP_DIR/product_id/
     :param str product_id: Product ID
     """
+
+    if os.path.exists(TEMP_DIR) == False:
+        os.makedirs(TEMP_DIR)
 
     zip_ref = zipfile.ZipFile(os.path.join(TEMP_DIR, product_id + '.zip'), 'r')
     zip_ref.extractall(os.path.join(TEMP_DIR, product_id))
@@ -377,7 +388,6 @@ def clip_image_to_shape(source_image_path, output_image_path):
         # GetGeometryType() == 6: MULTIPOLYGON
 
         # Create a list of (x,y) pairs of output_geometry coordinates
-        # TODO: implement a pattern from the following 'elif' block (processing of POLYGONs and MULTIPOLYGONs)
         polygons = []
         if output_geometry_type == 3:
             pts = output_geometry.GetGeometryRef(0)
@@ -589,6 +599,9 @@ def zip_product(product_id, title):
 
     contents = os.walk(folder_path)
 
+    if os.path.exists(IMAGERY_DIR) == False:
+        os.makedirs(IMAGERY_DIR)
+
     try:
         zip_file = zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED)
         for root, folders, files in contents:
@@ -667,21 +680,23 @@ def rolling_archive():
     boundary = AdministrativeUnit.objects.get(unit_name='POLSKA')
     boundary = boundary.poly[0]
 
-    time_range_end = timezone.now()
-    time_range_start = time_range_end - timedelta(days=14)
-
     # time_range_end = timezone.now()
-    # time_range_start = time_range_end - timedelta(hours=6)
+    # time_range_start = time_range_end - timedelta(days=14)
+
+    time_range_end = timezone.now()
+    time_range_start = time_range_end - timedelta(hours=6)
 
     expired_products = Product.objects.filter(is_downloaded=True,
                                               ingestion_date__lt=time_range_start)
+    if expired_products:
+        for product in expired_products:
+            shutil.rmtree(os.path.join(BASE_DIR, product.id + '.zip'))
+            product.is_downloaded = False
+            product.save()
 
-    for product in expired_products:
-        shutil.rmtree(os.path.join(BASE_DIR, product.id + '.zip'))
-        product.is_downloaded = False
-        product.save()
-
-    print('deleted expired products')
+        print('deleted expired products')
+    else:
+        print('there are no expired products to delete')
 
     fresh_products = Product.objects.filter(is_downloaded=False,
                                             ingestion_date__gte=time_range_start,
@@ -693,21 +708,29 @@ def rolling_archive():
                                                     product_type='GRD',
                                                     coordinates__overlaps=boundary)
 
-    for product in fresh_products:
-        download_product(product.id)
-        unzip_product(product.id)
+    if fresh_products:
+        for product in fresh_products:
+            download_product(product.id)
+            unzip_product(product.id)
 
-        shutil.rmtree(os.path.join(TEMP_DIR, product.id + '.zip'))
+            shutil.rmtree(os.path.join(TEMP_DIR, product.id + '.zip'))
 
-        product.is_downloaded = True
-        product.save()
+            product.is_downloaded = True
+            product.save()
+        print('downloaded fresh products')
+    else:
+        print('there are no fresh products to download')
 
-    for product in fresh_products_to_clip:
-        download_product(product.id)
-        unzip_product(product.id)
+    if fresh_products_to_clip:
+        for product in fresh_products_to_clip:
+            download_product(product.id)
+            unzip_product(product.id)
 
-        shutil.rmtree(os.path.join(TEMP_DIR, product.id + '.zip'))
-        iterate_product(product.id, product.title, product.satellite)
+            shutil.rmtree(os.path.join(TEMP_DIR, product.id + '.zip'))
+            iterate_product(product.id, product.title, product.satellite)
 
-        product.is_downloaded = True
-        product.save()
+            product.is_downloaded = True
+            product.save()
+        print('downloaded and clipped fresh products')
+    else:
+        print('there are no fresh products to download and clip')

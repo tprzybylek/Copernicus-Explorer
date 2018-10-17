@@ -37,6 +37,9 @@ def download_product(product_id):
 
     r = requests.get(url, auth=(username, password), stream=True)
     if r.status_code == 200:
+        if os.path.exists(TEMP_DIR) == False:
+            os.makedirs(TEMP_DIR)
+
         with open(os.path.join(TEMP_DIR, product_id + '.zip'), 'wb') as f:
             r.raw.decode_content = True
             shutil.copyfileobj(r.raw, f)
@@ -46,9 +49,12 @@ def download_product(product_id):
 
 def unzip_product(product_id):
     """
-    Unzips the product to /DOWNLOAD_PATH/id/
+    Unzips the product to /TEMP_DIR/product_id/
     :param str product_id: Product ID
     """
+
+    if os.path.exists(TEMP_DIR) == False:
+        os.makedirs(TEMP_DIR)
 
     zip_ref = zipfile.ZipFile(os.path.join(TEMP_DIR, product_id + '.zip'), 'r')
     zip_ref.extractall(os.path.join(TEMP_DIR, product_id))
@@ -362,8 +368,7 @@ def perform_order(order_id):
     products = order.products.all()
 
     for p in products:
-        #   download product (if not already downloaded)
-
+        # download product (if not already downloaded)
         if not os.path.isfile(os.path.join(TEMP_DIR, p.id + '.zip')):
             print('Product is being downloaded')
             download_product(p.id)
@@ -372,7 +377,7 @@ def perform_order(order_id):
             print('Product is being extracted')
             unzip_product(p.id)
 
-        #   clip product
+        # clip product
         iterate_product(p, order)
 
     # zip order
