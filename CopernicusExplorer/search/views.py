@@ -51,7 +51,6 @@ def results(request):
             r = r.filter(orbit_direction__in=f['orbit_direction'])
 
         if f['polarisation_mode']:
-            print(f['polarisation_mode'])
             r = r.filter(polarisation_mode__contains=f['polarisation_mode'])
 
         if f['product_type']:

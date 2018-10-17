@@ -84,9 +84,9 @@ class SearchForm(forms.Form):
         s2_product_type = {'S2MSI2A', 'S2MSI2A'}
 
         if satellite == 'S1' and (product_type.intersection(s2_product_type) or
-                                  cloud_cover is not None):
+                                  cloud_cover):
             raise forms.ValidationError("Wybrano satelitę S1 jednak otrzymano atrybuty S2")
-        elif satellite == 'S2' and (product_type.intersection(s1_product_type) is not None
-                                    or polarisation_mode is not None
-                                    or sensor_mode is not None):
+        elif satellite == 'S2' and (product_type.intersection(s1_product_type)
+                                    or polarisation_mode
+                                    or sensor_mode):
             raise forms.ValidationError("Wybrano satelitę S2 jednak otrzymano atrybuty S1")
