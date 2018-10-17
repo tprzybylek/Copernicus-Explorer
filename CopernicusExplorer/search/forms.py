@@ -71,4 +71,3 @@ class SearchForm(forms.Form):
 
     search_extent_max_y = forms.DecimalField(label='Maksymalna szerokość geograficzna (φ)',
                                              required=False)
-    captcha = CaptchaField()
