@@ -14,6 +14,7 @@ import os
 import json
 from celery.schedules import crontab
 from datetime import datetime
+from django.utils import timezone
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -195,4 +196,4 @@ CELERY_BEAT_SCHEDULE = {
     }
 }
 
-ARCHIVE_STARTING_DATE = datetime(year=2018, month=1, day=1)
+ARCHIVE_STARTING_DATE = datetime(year=2018, month=1, day=1, tzinfo=timezone.utc)
