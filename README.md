@@ -1,4 +1,4 @@
-# Copernicus-Django
+# Copernicus-Explorer
 Final version of the web catalogue of Sentinel imagery Copernicus-Explorer written in Python/Django
 
 ## Features
